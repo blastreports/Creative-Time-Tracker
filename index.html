@@ -121,10 +121,18 @@
           <label>Your name</label>
           <select id="person">
             <option value="">Select team member...</option>
-            <option>Alex Chen</option><option>Billie Santos</option><option>Casey Moore</option>
-            <option>Dana Rivera</option><option>Eli Thompson</option><option>Fiona Park</option>
-            <option>George Lee</option><option>Hannah Osei</option><option>Isla Murray</option>
-            <option>James Walsh</option><option>Kira Novak</option><option>Luca Ferri</option>
+            <option>Huy</option>
+            <option>Ida</option>
+            <option>Lasse</option>
+            <option>Louis</option>
+            <option>Marcell</option>
+            <option>Neno</option>
+            <option>Nicolaj</option>
+            <option>Peter</option>
+            <option>Stephan</option>
+            <option>Victor</option>
+            <option>Yana</option>
+            <option>Helena</option>
           </select>
         </div>
         <div class="form-row">
@@ -135,15 +143,111 @@
       <div class="grid-2">
         <div class="form-row">
           <label>Project</label>
-          <select id="project">
+          <select id="project" onchange="updateSubprojects()">
             <option value="">Select project...</option>
-            <option>Brand & Marketing</option><option>Client Events</option><option>Internal Ops</option>
-            <option>Production & Logistics</option><option>Design & Creative</option><option>Admin</option>
+            <option>Internal</option>
+            <option>Commercial</option>
+            <option>pitch</option>
+            <option>BLAST TV 2026</option>
+            <option>Dota General 2026</option>
+            <option>SLAM 6 (VI) 2026 - Malta</option>
+            <option>SLAM 7 (VII) 2026 - Copenhagen</option>
+            <option>SLAM 8 (VIII) 2026</option>
+            <option>SLAM 9 (IX) 2026</option>
+            <option>FNCS: Competition Operations 2026</option>
+            <option>FNCS: Last Chance Qualifiers 2026</option>
+            <option>FNCS Legends Landing 2026</option>
+            <option>FNCS: Major 1 2026</option>
+            <option>FNCS: Major 1 Summit 2026</option>
+            <option>FNCS: Major 2 2026</option>
+            <option>FNCS: Major 3 2026</option>
+            <option>FNCS: Non-event specific 2026</option>
+            <option>FNCS: Pro-Am 2026</option>
+            <option>Fortnite Mobile Series 2026</option>
+            <option>Fortnite Reload Elite Series</option>
+            <option>Premier General</option>
+            <option>Premier: Bounty (S1) 2026 - Malta</option>
+            <option>Premier: Open (S1) 2026 - Rotterdam</option>
+            <option>Premier: Rivals (S1) 2026 - Fort Worth</option>
+            <option>Premier: Bounty (S2) 2026 - Malta</option>
+            <option>Premier: Open (S2) 2026</option>
+            <option>Premier: Rivals (S2) 2026</option>
+            <option>R6: Six Invitational 2026</option>
+            <option>R6: APL Challenger Series 2026</option>
+            <option>R6: APL Kickoff 2026</option>
+            <option>R6: APL Regional Finals 2026</option>
+            <option>R6: EML Challenger Series 2026</option>
+            <option>R6: EML Kickoff 2026</option>
+            <option>R6: EML Regional Finals 2026</option>
+            <option>R6: Last Chance Qualifier 2026</option>
+            <option>R6: Major 1 2026 - Salt Lake City</option>
+            <option>R6: Major 2 2026 - Osaka</option>
+            <option>R6: NAL Challenger Series 2026</option>
+            <option>R6: NAL Kickoff 2026</option>
+            <option>R6: NAL Regional Finals 2026</option>
+            <option>R6: Non-Event Related 2026/2027</option>
+            <option>R6: SAL Challenger Series 2026</option>
+            <option>R6: SAL Kickoff 2026</option>
+            <option>R6: SAL Regional Finals 2026</option>
+            <option>R6: Six Invitational 2027</option>
+            <option>R6: Split 1 APL 2026</option>
+            <option>R6: Split 1 EML 2026</option>
+            <option>R6: Split 1 NAL 2026</option>
+            <option>R6: Split 1 SAL 2026</option>
+            <option>R6: Split 2 APL 2026</option>
+            <option>R6: Split 2 EML 2026</option>
+            <option>R6: Split 2 NAL 2026</option>
+            <option>R6: Split 2 SAL 2026</option>
+            <option>RLCS: CRL 2026</option>
+            <option>RLCS: Last Chance Qualifier 2026</option>
+            <option>RLCS: Major 1 2026</option>
+            <option>RLCS: Major 2 2026</option>
+            <option>RLCS: Non-event specific 2026</option>
+            <option>RLCS: Online Qualifier (1v1 + 2v2) - EU/NA 2026</option>
+            <option>RLCS: Online Qualifier (1v1 + 2v2) - Rest of World 2026</option>
+            <option>RLCS: Online Qualifiers (Major 1) 2026 - EU/NA</option>
+            <option>RLCS: Online Qualifiers (Major 1) 2026 - Rest of World</option>
+            <option>RLCS: Online Qualifiers (Major 2) 2026 - EU/NA</option>
+            <option>RLCS: Online Qualifiers (Major 2) 2026 - Rest of World</option>
+            <option>RLCS: Worlds Championship 2026</option>
+            <option>Brawl Stars Spring Split 2026</option>
+            <option>Brawl Stars Brawl Cup 2026</option>
+            <option>Brawl Stars Summer Split 2026</option>
+            <option>Brawl Stars LCQ 2026</option>
+            <option>Brawl Stars World Finals 2026</option>
+            <option>Brawl Stars General 2026</option>
+            <option>Wimbledon 2026</option>
           </select>
         </div>
         <div class="form-row">
-          <label>Event / task</label>
-          <input type="text" id="event" placeholder="e.g. Summer Gala, Vendor calls..." />
+          <label>Subproject / task</label>
+          <select id="event">
+            <option value="">Select subproject...</option>
+            <option>Administrative Tasks</option>
+            <option>Broadcast GFX</option>
+            <option>Commercial</option>
+            <option>Content GFX</option>
+            <option>Creative Exploration / Creative Education</option>
+            <option>FC Pro</option>
+            <option>Host City tasks</option>
+            <option>IT Infrastructure</option>
+            <option>Identity Production</option>
+            <option>In-Lieu</option>
+            <option>Internal Decks</option>
+            <option>Marketing</option>
+            <option>Maternity/Paternity</option>
+            <option>Meetings</option>
+            <option>Nothing to do</option>
+            <option>Print</option>
+            <option>Project Management / Planning</option>
+            <option>RFP</option>
+            <option>Sick</option>
+            <option>SoMe GFX / Social</option>
+            <option>Studio GFX</option>
+            <option>Vacation</option>
+            <option>Venue GFX</option>
+            <option>eChampionship</option>
+          </select>
         </div>
       </div>
       <div class="grid-2">
@@ -224,7 +328,9 @@
   const COLORS = ['#378ADD','#1D9E75','#D85A30','#D4537E','#BA7517','#639922','#7F77DD','#888780','#E24B4A','#0F6E56','#993C1D','#534AB7'];
   const AVATAR_BG = ['#B5D4F4','#9FE1CB','#F5C4B3','#F4C0D1','#FAC775','#C0DD97','#CECBF6','#D3D1C7','#F7C1C1','#5DCAA5','#F0997B','#AFA9EC'];
   const AVATAR_FG = ['#0C447C','#085041','#712B13','#72243E','#633806','#3B6D11','#3C3489','#444441','#791F1F','#04342C','#993C1D','#26215C'];
-  const PEOPLE = ['Alex Chen','Billie Santos','Casey Moore','Dana Rivera','Eli Thompson','Fiona Park','George Lee','Hannah Osei','Isla Murray','James Walsh','Kira Novak','Luca Ferri'];
+  
+  const PROJECT_SUBPROJECTS = {"Brawl Stars Spring Split 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Brawl Stars Brawl Cup 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Brawl Stars Summer Split 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Brawl Stars LCQ 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Brawl Stars World Finals 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Brawl Stars General 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Premier General": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "BLAST TV 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Dota General 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "SLAM 6 (VI) 2026 - Malta": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "SLAM 7 (VII) 2026 - Copenhagen": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "SLAM 8 (VIII) 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "SLAM 9 (IX) 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS Legends Landing 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Major 1 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Major 1 Summit 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Major 2 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Major 3 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Competition Operations 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Last Chance Qualifiers 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Non-event specific 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Pro-Am 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Fortnite Mobile Series 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Fortnite Reload Elite Series": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Premier: Bounty (S1) 2026 - Malta": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Premier: Open (S1) 2026 - Rotterdam": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Premier: Rivals (S1) 2026 - Fort Worth": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Premier: Bounty (S2) 2026 - Malta": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Premier: Open (S2) 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Premier: Rivals (S2) 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: APL Challenger Series 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: APL Kickoff 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: APL Regional Finals 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: EML Challenger Series 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: EML Kickoff 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: EML Regional Finals 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Last Chance Qualifier 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Major 1 2026 - Salt Lake City": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Major 2 2026 - Osaka": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: NAL Challenger Series 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: NAL Kickoff 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: NAL Regional Finals 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Non-Event Related 2026/2027": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: SAL Challenger Series 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: SAL Kickoff 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: SAL Regional Finals 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Six Invitational 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Six Invitational 2027": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 1 APL 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 1 EML 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 1 NAL 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 1 SAL 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 2 APL 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 2 EML 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 2 NAL 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 2 SAL 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: CRL 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Online Qualifier (1v1 + 2v2) - EU/NA 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Online Qualifier (1v1 + 2v2) - Rest of World 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Last Chance Qualifier 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Major 1 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Major 2 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Non-event specific 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Online Qualifiers (Major 1) 2026 - EU/NA": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Online Qualifiers (Major 1) 2026 - Rest of World": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Online Qualifiers (Major 2) 2026 - EU/NA": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Online Qualifiers (Major 2) 2026 - Rest of World": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Worlds Championship 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Wimbledon 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Internal": ["Vacation", "In-Lieu", "Sick", "IT Infrastructure", "Meetings", "Administrative Tasks", "Internal Decks", "Host City tasks", "Nothing to do", "Maternity/Paternity", "Creative Exploration / Creative Education", "Project Management / Planning"], "Commercial": ["eChampionship", "FC Pro"], "__none__": ["Merch", "HUD"]};
+  const PEOPLE = ['Huy','Ida','Lasse','Louis','Marcell','Neno','Nicolaj','Peter','Stephan','Victor','Yana','Helena'];
 
   let entries = [];
   let unlocked = false;
@@ -254,26 +360,39 @@
   }
 
   // ── GOOGLE SHEETS INTEGRATION ────────────────────────────────────────────────
+  // Uses GET with URL params to avoid CORS preflight issues with Google Apps Script
+  function buildUrl(params) {
+    const url = new URL(APPS_SCRIPT_URL);
+    Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
+    return url.toString();
+  }
+
   async function postEntry(entry) {
     if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-      // Fallback to localStorage in dev mode
       entries.unshift(entry);
       return true;
     }
-    const res = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify(entry)
+    const url = buildUrl({
+      action: 'add',
+      id: entry.id,
+      person: entry.person,
+      date: entry.date,
+      project: entry.project,
+      event: entry.event,
+      hours: entry.hours,
+      notes: entry.notes || ''
     });
+    const res = await fetch(url);
     const data = await res.json();
     return data.status === 'ok';
   }
 
   async function loadEntries() {
     if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-      return; // use in-memory entries in dev mode
+      return;
     }
     try {
-      const res = await fetch(APPS_SCRIPT_URL + '?action=get');
+      const res = await fetch(buildUrl({ action: 'get' }));
       const data = await res.json();
       entries = data.entries || [];
       setSyncStatus('Synced', true);
@@ -411,12 +530,19 @@
   async function deleteEntry(id) {
     if (!confirm('Delete this entry?')) return;
     if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
-      await fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', id }) });
+      await fetch(buildUrl({ action: 'delete', id }));
       await loadEntries();
     } else {
       entries = entries.filter(e => e.id != id);
     }
     renderEntries();
+  }
+
+  function updateSubprojects() {
+    const proj = document.getElementById('project').value;
+    const sel = document.getElementById('event');
+    const subs = PROJECT_SUBPROJECTS[proj] || Object.values(PROJECT_SUBPROJECTS).flat().filter((v,i,a)=>a.indexOf(v)===i).sort();
+    sel.innerHTML = '<option value="">Select subproject...</option>' + subs.map(s=>`<option>${s}</option>`).join('');
   }
 
   // Init
