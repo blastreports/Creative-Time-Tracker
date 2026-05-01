@@ -217,7 +217,7 @@
 <script>
   // ── CONFIG ──────────────────────────────────────────────────────────────────
   // After deploying your Google Apps Script, paste the web app URL below.
-  const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/blast.tv/s/AKfycby27ujPkxfIQE-nyVVCyTuOwKy1Rab5vA3Dr09D5VN7QkcGcFpB0lmww3kEkuU2di2r/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/blast.tv/s/AKfycbwHqByWspFx4T36b0O2NUZBqoD9TiwrgTTgA5qdMAg8vt1k_1yxxp5UD2GRE0HwtFkV/exec';
   const DASHBOARD_PASSWORD = 'manager2024'; // Change this!
   // ────────────────────────────────────────────────────────────────────────────
 
@@ -255,7 +255,7 @@
 
   // ── GOOGLE SHEETS INTEGRATION ────────────────────────────────────────────────
   async function postEntry(entry) {
-    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'https://script.google.com/a/macros/blast.tv/s/AKfycby27ujPkxfIQE-nyVVCyTuOwKy1Rab5vA3Dr09D5VN7QkcGcFpB0lmww3kEkuU2di2r/exec') {
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
       // Fallback to localStorage in dev mode
       entries.unshift(entry);
       return true;
@@ -269,7 +269,7 @@
   }
 
   async function loadEntries() {
-    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'https://script.google.com/a/macros/blast.tv/s/AKfycby27ujPkxfIQE-nyVVCyTuOwKy1Rab5vA3Dr09D5VN7QkcGcFpB0lmww3kEkuU2di2r/exec') {
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
       return; // use in-memory entries in dev mode
     }
     try {
@@ -410,7 +410,7 @@
 
   async function deleteEntry(id) {
     if (!confirm('Delete this entry?')) return;
-    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'https://script.google.com/a/macros/blast.tv/s/AKfycby27ujPkxfIQE-nyVVCyTuOwKy1Rab5vA3Dr09D5VN7QkcGcFpB0lmww3kEkuU2di2r/exec') {
+    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
       await fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', id }) });
       await loadEntries();
     } else {
