@@ -65,8 +65,8 @@
     .bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
     .bar-hrs { font-size: 12px; color: var(--text2); min-width: 40px; text-align: right; }
     .section-title { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin: 20px 0 10px; }
-    .entry-row { display: grid; grid-template-columns: 130px 1fr 1fr 1fr 1fr 48px 70px 28px; gap: 8px; align-items: center; padding: 10px 14px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; font-size: 13px; }
-    .entry-header { display: grid; grid-template-columns: 130px 1fr 1fr 1fr 1fr 48px 70px 28px; gap: 8px; align-items: center; padding: 6px 14px; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .entry-row { display: grid; grid-template-columns: 120px 1fr 1fr 1fr 1fr 60px 80px 28px; gap: 8px; align-items: center; padding: 10px 14px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; font-size: 13px; }
+    .entry-header { display: grid; grid-template-columns: 120px 1fr 1fr 1fr 1fr 60px 80px 28px; gap: 8px; align-items: center; padding: 6px 14px; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
     .entry-row:hover { border-color: var(--border2); }
     .avatar { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; flex-shrink: 0; }
     .person-cell { display: flex; align-items: center; gap: 7px; }
@@ -350,9 +350,10 @@
           <option>Studio GFX</option><option>Vacation</option><option>Venue GFX</option><option>eChampionship</option>
         </select>
       </div>
-      <div class="entry-header">
+      <div class="entry-header" style="grid-template-columns:120px 1fr 1fr 1fr 1fr 60px 80px 28px;">
         <div>Person</div>
         <div>Project</div>
+        <div>Event</div>
         <div>Subproject</div>
         <div>Notes</div>
         <div>Hours</div>
@@ -1115,8 +1116,8 @@
           <div class="avatar" style="background:${AVATAR_BG[idx]||'#D3D1C7'};color:${AVATAR_FG[idx]||'#444441'};">${initials(e.person)}</div>
           ${e.person}
         </div>
-        <div class="muted">${e.project}</div>
-        <div class="muted">${e.event}</div>
+        <div class="muted">${e.project || ''}</div>
+        <div class="muted">${e.event || ''}</div>
         <div class="muted">${e.subproject || ''}</div>
         <div class="muted">${e.notes || ''}</div>
         <div style="font-weight:500;">${(+e.hours).toLocaleString('en-GB', {minimumFractionDigits:1, maximumFractionDigits:1})}h</div>
@@ -1220,16 +1221,17 @@
     if (!data.length) { list.innerHTML = '<div class="empty">No entries found.</div>'; return; }
     list.innerHTML = data.map(e => {
       const idx = personIdx(e.person);
-      return `<div class="entry-row" style="grid-template-columns:130px 1fr 1fr 1fr 48px 70px 28px;">
+      return `<div class="entry-row" style="grid-template-columns:120px 1fr 1fr 1fr 1fr 60px 80px 28px;">
         <div class="person-cell">
           <div class="avatar" style="background:${AVATAR_BG[idx]||'#D3D1C7'};color:${AVATAR_FG[idx]||'#444441'};">${initials(e.person)}</div>
           ${e.person}
         </div>
-        <div class="muted">${e.project}</div>
+        <div class="muted">${e.project || ''}</div>
+        <div class="muted">${e.event || ''}</div>
         <div class="muted">${e.subproject || ''}</div>
         <div class="muted">${e.notes || ''}</div>
         <div style="font-weight:500;">${(+e.hours).toLocaleString('en-GB', {minimumFractionDigits:1, maximumFractionDigits:1})}h</div>
-        <div class="muted">${e.date}</div>
+        <div class="muted">${e.date || ''}</div>
         <div class="entry-actions">
           <button class="edit-btn" onclick="openEditModal(${e.id})" title="Edit">✏️</button>
           <button class="del-btn" onclick="deleteEntryFromLog(${e.id})" title="Delete">×</button>
