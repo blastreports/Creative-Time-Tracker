@@ -38,7 +38,7 @@
     .tabs { display: flex; gap: 0; border-bottom: 0.5px solid var(--border); background: var(--bg); padding: 0 24px; }
     .tab { padding: 12px 18px; font-size: 14px; cursor: pointer; border: none; background: none; color: var(--text2); border-bottom: 2px solid transparent; margin-bottom: -0.5px; }
     .tab.active { color: var(--text); border-bottom-color: var(--text); font-weight: 500; }
-    .container { max-width: 760px; margin: 0 auto; padding: 28px 20px; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 28px 20px; }
     .section { display: none; }
     .section.active { display: block; }
     .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 16px; }
@@ -66,6 +66,7 @@
     .bar-hrs { font-size: 12px; color: var(--text2); min-width: 40px; text-align: right; }
     .section-title { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin: 20px 0 10px; }
     .entry-row { display: grid; grid-template-columns: 130px 1fr 1fr 1fr 1fr 48px 70px 28px; gap: 8px; align-items: center; padding: 10px 14px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; font-size: 13px; }
+    .entry-header { display: grid; grid-template-columns: 130px 1fr 1fr 1fr 1fr 48px 70px 28px; gap: 8px; align-items: center; padding: 6px 14px; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
     .entry-row:hover { border-color: var(--border2); }
     .avatar { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; flex-shrink: 0; }
     .person-cell { display: flex; align-items: center; gap: 7px; }
@@ -119,7 +120,7 @@
       <div class="grid-2">
         <div class="form-row">
           <label>Your name</label>
-          <select id="person">
+          <select id="person" onchange="renderPersonEntries()">
             <option value="">Select team member...</option>
             <option>Huy</option>
             <option>Ida</option>
@@ -261,6 +262,17 @@
         </div>
       </div>
       <button class="btn btn-primary" onclick="logEntry()">Log hours</button>
+    </div>
+    <div id="person-entries-panel" style="display:none; margin-top:16px;">
+      <div class="section-title" id="person-entries-title"></div>
+      <div class="entry-header" style="grid-template-columns: 1fr 1fr 1fr 48px 80px;">
+        <div>Event</div>
+        <div>Subproject</div>
+        <div>Notes</div>
+        <div>Hours</div>
+        <div>Date</div>
+      </div>
+      <div id="person-entries-list"></div>
     </div>
   </div>
 
@@ -467,6 +479,37 @@
       </select>
       <button class="btn" onclick="loadEntries().then(renderEntries)" style="font-size:13px;padding:6px 14px;">Refresh</button>
     </div>
+    <div class="filter-bar" style="margin-top:-8px;">
+      <select id="entries-filter-subproject" onchange="renderEntries()">
+        <option value="">All subprojects</option>
+        <option>Administrative Tasks</option>
+        <option>Broadcast GFX</option>
+        <option>Commercial</option>
+        <option>Content GFX</option>
+        <option>Creative Exploration / Creative Education</option>
+        <option>FC Pro</option>
+        <option>Host City tasks</option>
+        <option>IT Infrastructure</option>
+        <option>Identity Production</option>
+        <option>In-Lieu</option>
+        <option>Internal Decks</option>
+        <option>Marketing</option>
+        <option>Maternity/Paternity</option>
+        <option>Meetings</option>
+        <option>Nothing to do</option>
+        <option>Print</option>
+        <option>Project Management / Planning</option>
+        <option>RFP</option>
+        <option>Sick</option>
+        <option>SoMe GFX / Social</option>
+        <option>Studio GFX</option>
+        <option>Vacation</option>
+        <option>Venue GFX</option>
+        <option>eChampionship</option>
+      </select>
+      <input type="date" id="entries-filter-date-from" onchange="renderEntries()" style="font-size:13px;padding:6px 10px;width:auto;flex:1;min-width:130px;" title="From date" />
+      <input type="date" id="entries-filter-date-to" onchange="renderEntries()" style="font-size:13px;padding:6px 10px;width:auto;flex:1;min-width:130px;" title="To date" />
+    </div>
     <div id="entries-list"></div>
   </div>
 
@@ -575,6 +618,7 @@
         document.getElementById('event').value = '';
         document.getElementById('hours').value = '';
         document.getElementById('notes').value = '';
+        loadEntries().then(renderPersonEntries);
       } else { toast('Save failed — try again.'); }
     } catch(e) { toast('Network error — check connection.'); }
     btn.textContent = 'Log hours'; btn.disabled = false;
@@ -660,12 +704,31 @@
 
   // ── ENTRIES LIST ─────────────────────────────────────────────────────────────
   function renderEntries() {
-    const proj   = document.getElementById('entries-filter-project').value;
-    const person = document.getElementById('entries-filter-person').value;
-    const data   = entries.filter(e => (!proj || e.project===proj) && (!person || e.person===person));
+    const proj       = document.getElementById('entries-filter-project').value;
+    const person     = document.getElementById('entries-filter-person').value;
+    const subproject = document.getElementById('entries-filter-subproject').value;
+    const dateFrom   = document.getElementById('entries-filter-date-from').value;
+    const dateTo     = document.getElementById('entries-filter-date-to').value;
+    const data = entries.filter(e =>
+      (!proj       || e.project === proj) &&
+      (!person     || e.person === person) &&
+      (!subproject || e.subproject === subproject) &&
+      (!dateFrom   || e.date >= dateFrom) &&
+      (!dateTo     || e.date <= dateTo)
+    );
     const list   = document.getElementById('entries-list');
     if (!data.length) { list.innerHTML = '<div class="empty">No entries found.</div>'; return; }
-    list.innerHTML = data.map(e => {
+    const header = `<div class="entry-header">
+      <div>Person</div>
+      <div>Project</div>
+      <div>Event</div>
+      <div>Subproject</div>
+      <div>Notes</div>
+      <div>Hours</div>
+      <div>Date</div>
+      <div></div>
+    </div>`;
+    list.innerHTML = header + data.map(e => {
       const idx = personIdx(e.person);
       return `<div class="entry-row">
         <div class="person-cell">
@@ -692,6 +755,26 @@
       entries = entries.filter(e => e.id != id);
     }
     renderEntries();
+  }
+
+  function renderPersonEntries() {
+    const person = document.getElementById('person').value;
+    const panel = document.getElementById('person-entries-panel');
+    const list = document.getElementById('person-entries-list');
+    const title = document.getElementById('person-entries-title');
+    if (!person) { panel.style.display = 'none'; return; }
+    const data = entries.filter(e => e.person === person).slice().sort((a,b) => b.date.localeCompare(a.date));
+    panel.style.display = 'block';
+    title.textContent = `Recent entries for ${person} (${data.length} total)`;
+    if (!data.length) { list.innerHTML = '<div class="empty">No entries yet.</div>'; return; }
+    list.innerHTML = data.map(e => `
+      <div class="entry-row" style="grid-template-columns: 1fr 1fr 1fr 48px 80px;">
+        <div class="muted">${e.event}</div>
+        <div class="muted">${e.subproject || ''}</div>
+        <div class="muted">${e.notes || ''}</div>
+        <div style="font-weight:500;">${(+e.hours).toFixed(1)}h</div>
+        <div class="muted">${e.date}</div>
+      </div>`).join('');
   }
 
   function updateSubprojects() {
