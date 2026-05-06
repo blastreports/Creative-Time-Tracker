@@ -65,7 +65,7 @@
     .bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
     .bar-hrs { font-size: 12px; color: var(--text2); min-width: 40px; text-align: right; }
     .section-title { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin: 20px 0 10px; }
-    .entry-row { display: grid; grid-template-columns: 160px 1fr 1fr 52px 70px 28px; gap: 8px; align-items: center; padding: 10px 14px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; font-size: 13px; }
+    .entry-row { display: grid; grid-template-columns: 140px 1fr 1fr 1fr 52px 70px 28px; gap: 8px; align-items: center; padding: 10px 14px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; font-size: 13px; }
     .entry-row:hover { border-color: var(--border2); }
     .avatar { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; flex-shrink: 0; }
     .person-cell { display: flex; align-items: center; gap: 7px; }
@@ -673,9 +673,10 @@
           ${e.person}
         </div>
         <div class="muted">${e.project}</div>
-        <div>${e.event}${e.notes ? `<br><span class="small">${e.notes}</span>` : ''}</div>
+        <div class="muted">${e.event}</div>
+        <div>${e.subproject || ''}${e.notes ? `<br><span class="small">${e.notes}</span>` : ''}</div>
         <div style="font-weight:500;">${(+e.hours).toFixed(1)}h</div>
-        <div class="small">${e.date}</div>
+        <div class="muted">${e.date}</div>
         <button class="del-btn" onclick="deleteEntry(${e.id})">×</button>
       </div>`;
     }).join('');
