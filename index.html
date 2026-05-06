@@ -961,7 +961,8 @@
     document.getElementById('new-project-name').value = '';
     refreshAllDropdowns();
     renderSettingsLists();
-    toast(`Project "${name}" added!`);
+    saveProjectToSheet(name);
+    toast(`Project "${name}" added and saved!`);
   }
 
   function addSubproject() {
@@ -975,13 +976,49 @@
     document.getElementById('new-subproject-name').value = '';
     refreshAllDropdowns();
     renderSubprojectsList();
-    toast(`Subproject "${name}" added to "${proj}"!`);
+    saveSubprojectToSheet(proj, name);
+    toast(`Subproject "${name}" added and saved!`);
   }
 
   // Listen for project select change in settings to show its subprojects
   document.addEventListener('change', e => {
     if (e.target.id === 'settings-project-select') renderSubprojectsList();
   });
+
+  async function loadSettings() {
+    try {
+      const res = await fetch(buildUrl({ action: 'getSettings' }));
+      const data = await res.json();
+      if (data.settings && data.settings.length) {
+        // Clear existing dynamic projects (keep __none__)
+        const none = PROJECT_SUBPROJECTS['__none__'];
+        Object.keys(PROJECT_SUBPROJECTS).forEach(k => { if (k !== '__none__') delete PROJECT_SUBPROJECTS[k]; });
+        PROJECT_SUBPROJECTS['__none__'] = none;
+        data.settings.forEach(row => {
+          if (row.type === 'project') {
+            if (!PROJECT_SUBPROJECTS[row.value]) PROJECT_SUBPROJECTS[row.value] = [];
+          } else if (row.type && row.type.startsWith('subproject:')) {
+            const proj = row.type.replace('subproject:', '');
+            if (!PROJECT_SUBPROJECTS[proj]) PROJECT_SUBPROJECTS[proj] = [];
+            if (!PROJECT_SUBPROJECTS[proj].includes(row.value)) PROJECT_SUBPROJECTS[proj].push(row.value);
+          }
+        });
+        refreshAllDropdowns();
+      }
+    } catch(e) { /* use hardcoded defaults if settings unavailable */ }
+  }
+
+  async function saveProjectToSheet(name) {
+    try {
+      await fetch(buildUrl({ action: 'saveSetting', type: 'project', value: name }));
+    } catch(e) { toast('Saved locally only — could not reach sheet.'); }
+  }
+
+  async function saveSubprojectToSheet(proj, name) {
+    try {
+      await fetch(buildUrl({ action: 'saveSetting', type: `subproject:${proj}`, value: name }));
+    } catch(e) { toast('Saved locally only — could not reach sheet.'); }
+  }
 
   function updateSubprojects() {
     const proj = document.getElementById('project').value;
@@ -992,6 +1029,7 @@
 
   // Init
   loadEntries();
+  loadSettings();
 </script>
 </body>
 </html>
