@@ -72,8 +72,15 @@
     .person-cell { display: flex; align-items: center; gap: 7px; }
     .muted { color: var(--text2); }
     .small { font-size: 11px; color: var(--text3); }
-    .del-btn { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 17px; line-height: 1; padding: 0; }
-    .del-btn:hover { color: #E24B4A; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+    .modal { background: var(--bg); border-radius: var(--radius-lg); padding: 24px; width: 100%; max-width: 520px; box-shadow: 0 8px 40px rgba(0,0,0,0.2); }
+    .modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+    .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+    .btn-danger { background: #E24B4A; color: #fff; border-color: transparent; }
+    .btn-danger:hover { opacity: 0.85; background: #E24B4A; }
+    .edit-btn { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 14px; padding: 0 4px; }
+    .edit-btn:hover { color: var(--accent); }
+    .entry-actions { display: flex; gap: 2px; align-items: center; justify-content: flex-end; }
     .filter-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
     .filter-bar select { font-size: 13px; padding: 6px 10px; width: auto; flex: 1; min-width: 140px; }
     .empty { text-align: center; color: var(--text3); padding: 2.5rem; font-size: 14px; }
@@ -110,7 +117,7 @@
   <button class="tab active" onclick="switchTab('log')">Log time</button>
   <button class="tab" onclick="switchTab('dashboard')">Dashboard</button>
   <button class="tab" onclick="switchTab('entries')">All entries</button>
-  <button class="tab" onclick="switchTab('settings')">Settings</button>
+  <button class="tab" onclick="switchTab('settings')">Projects</button>
 </div>
 
 <div class="container">
@@ -605,6 +612,56 @@
 
 </div></div>
 
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal" style="display:none;" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal">
+    <h3>Edit entry</h3>
+    <input type="hidden" id="edit-id" />
+    <div class="grid-2">
+      <div class="form-row">
+        <label>Person</label>
+        <select id="edit-person">
+          <option>Huy</option><option>Ida</option><option>Lasse</option><option>Louis</option>
+          <option>Marcell</option><option>Neno</option><option>Nicolaj</option><option>Peter</option>
+          <option>Stephan</option><option>Victor</option><option>Yana</option><option>Helena</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Date</label>
+        <input type="date" id="edit-date" />
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-row">
+        <label>Project</label>
+        <input type="text" id="edit-project" />
+      </div>
+      <div class="form-row">
+        <label>Event</label>
+        <input type="text" id="edit-event" />
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-row">
+        <label>Subproject</label>
+        <input type="text" id="edit-subproject" />
+      </div>
+      <div class="form-row">
+        <label>Hours</label>
+        <input type="number" id="edit-hours" min="0.5" max="24" step="0.5" />
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Notes</label>
+      <input type="text" id="edit-notes" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary" style="width:auto;" onclick="saveEdit()">Save changes</button>
+    </div>
+  </div>
+</div>
+
 <script>
   // ── CONFIG ──────────────────────────────────────────────────────────────────
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwHqByWspFx4T36b0O2NUZBqoD9TiwrgTTgA5qdMAg8vt1k_1yxxp5UD2GRE0HwtFkV/exec';
@@ -830,7 +887,10 @@
         <div class="muted">${e.notes || ''}</div>
         <div style="font-weight:500;">${(+e.hours).toFixed(1)}h</div>
         <div class="muted">${e.date}</div>
-        <button class="del-btn" onclick="deleteEntry(${e.id})">×</button>
+        <div class="entry-actions">
+          <button class="edit-btn" onclick="openEditModal(${e.id})" title="Edit">✏️</button>
+          <button class="del-btn" onclick="deleteEntry(${e.id})" title="Delete">×</button>
+        </div>
       </div>`;
     }).join('');
   }
@@ -844,6 +904,52 @@
       entries = entries.filter(e => e.id != id);
     }
     renderEntries();
+  }
+
+  function openEditModal(id) {
+    const e = entries.find(e => e.id == id);
+    if (!e) return;
+    document.getElementById('edit-id').value = e.id;
+    document.getElementById('edit-person').value = e.person;
+    document.getElementById('edit-date').value = e.date;
+    document.getElementById('edit-project').value = e.project;
+    document.getElementById('edit-event').value = e.event;
+    document.getElementById('edit-subproject').value = e.subproject || '';
+    document.getElementById('edit-hours').value = e.hours;
+    document.getElementById('edit-notes').value = e.notes || '';
+    document.getElementById('edit-modal').style.display = 'flex';
+  }
+
+  function closeEditModal() {
+    document.getElementById('edit-modal').style.display = 'none';
+  }
+
+  async function saveEdit() {
+    const id         = document.getElementById('edit-id').value;
+    const person     = document.getElementById('edit-person').value;
+    const date       = document.getElementById('edit-date').value;
+    const project    = document.getElementById('edit-project').value.trim();
+    const event      = document.getElementById('edit-event').value.trim();
+    const subproject = document.getElementById('edit-subproject').value.trim();
+    const hours      = parseFloat(document.getElementById('edit-hours').value);
+    const notes      = document.getElementById('edit-notes').value.trim();
+    if (!person || !date || !project || !event || !hours || hours <= 0) {
+      toast('Please fill in all required fields.'); return;
+    }
+    const btn = document.querySelector('#edit-modal .btn-primary');
+    btn.textContent = 'Saving...'; btn.disabled = true;
+    try {
+      const url = buildUrl({ action: 'edit', id, person, date, project, event, subproject, hours, notes });
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.status === 'ok') {
+        closeEditModal();
+        await loadEntries();
+        renderEntries();
+        toast('Entry updated!');
+      } else { toast('Update failed — try again.'); }
+    } catch(e) { toast('Network error.'); }
+    btn.textContent = 'Save changes'; btn.disabled = false;
   }
 
   function renderPersonEntries() {
