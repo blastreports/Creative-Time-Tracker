@@ -1130,12 +1130,12 @@
           <div class="avatar" style="background:${AVATAR_BG[idx]||'#D3D1C7'};color:${AVATAR_FG[idx]||'#444441'};">${initials(e.person)}</div>
           ${e.person}
         </div>
-        <div class="muted">${e.project || ''}</div>
-        <div class="muted">${e.event || ''}</div>
-        <div class="muted">${e.subproject || ''}</div>
-        <div class="muted">${e.notes || ''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.project || ''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.event || ''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.subproject || ''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.notes || ''}</div>
         <div style="font-weight:500;">${(+e.hours).toLocaleString('en-GB', {minimumFractionDigits:1, maximumFractionDigits:1})}h</div>
-        <div class="muted">${e.date}</div>
+        <div style="color:var(--text2);">${e.date}</div>
         <div class="entry-actions">
           <button class="edit-btn" onclick="openEditModal(${e.id})" title="Edit">✏️</button>
           <button class="del-btn" onclick="deleteEntry(${e.id})" title="Delete">×</button>
@@ -1240,12 +1240,12 @@
           <div class="avatar" style="background:${AVATAR_BG[idx]||'#D3D1C7'};color:${AVATAR_FG[idx]||'#444441'};">${initials(e.person)}</div>
           ${e.person}
         </div>
-        <div class="muted">${e.project || ''}</div>
-        <div class="muted">${e.event || ''}</div>
-        <div class="muted">${e.subproject || ''}</div>
-        <div class="muted">${e.notes || ''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.project || ''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.event || ''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.subproject || ''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.notes || ''}</div>
         <div style="font-weight:500;">${(+e.hours).toLocaleString('en-GB', {minimumFractionDigits:1, maximumFractionDigits:1})}h</div>
-        <div class="muted">${e.date || ''}</div>
+        <div style="color:var(--text2);">${e.date || ''}</div>
         <div class="entry-actions">
           <button class="edit-btn" onclick="openEditModal(${e.id})" title="Edit">✏️</button>
           <button class="del-btn" onclick="deleteEntryFromLog(${e.id})" title="Delete">×</button>
