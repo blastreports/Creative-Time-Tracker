@@ -353,7 +353,6 @@
       <div class="entry-header">
         <div>Person</div>
         <div>Project</div>
-        <div>Event</div>
         <div>Subproject</div>
         <div>Notes</div>
         <div>Hours</div>
@@ -430,13 +429,6 @@
         <input type="date" id="dash-filter-date-from" onchange="renderDash()" style="font-size:13px;padding:6px 10px;width:auto;flex:1;min-width:130px;" title="From date" />
         <input type="date" id="dash-filter-date-to" onchange="renderDash()" style="font-size:13px;padding:6px 10px;width:auto;flex:1;min-width:130px;" title="To date" />
         <button class="btn" onclick="loadEntries().then(renderDash)" style="font-size:13px;padding:6px 14px;">Refresh</button>
-      </div>
-
-      <!-- View toggle -->
-      <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center;">
-        <span style="font-size:12px;color:var(--text2);font-weight:500;">View:</span>
-        <button id="toggle-hours" class="btn" onclick="setDashView('hours')" style="font-size:12px;padding:5px 14px;background:var(--text);color:var(--bg);border-color:transparent;">Hours</button>
-        <button id="toggle-cost" class="btn" onclick="setDashView('cost')" style="font-size:12px;padding:5px 14px;">Cost</button>
       </div>
 
       <!-- Rate editor -->
@@ -832,7 +824,6 @@
   const DEFAULT_RATE = 25; // €/hour — change this default here
   let rates = {}; // per-person overrides e.g. { "Huy": 30 }
   let ratesLoaded = false;
-  let dashView = 'hours';
 
   async function loadRates() {
     const statusEl = document.getElementById('rates-status');
@@ -887,12 +878,7 @@
     } catch(e) {}
   }
 
-  function setDashView(v) {
-    dashView = v;
-    document.getElementById('toggle-hours').style.cssText = v === 'hours' ? 'font-size:12px;padding:5px 14px;background:var(--text);color:var(--bg);border-color:transparent;' : 'font-size:12px;padding:5px 14px;';
-    document.getElementById('toggle-cost').style.cssText = v === 'cost' ? 'font-size:12px;padding:5px 14px;background:var(--text);color:var(--bg);border-color:transparent;' : 'font-size:12px;padding:5px 14px;';
-    renderDash();
-  }
+
 
   function filteredDash() {
     const proj     = document.getElementById('dash-filter-project')?.value || '';
@@ -921,7 +907,6 @@
 
   function renderDash() {
     const data = filteredDash();
-    const showCost = dashView === 'cost';
     const DONUT_COLORS = ['#4A90D9','#E8A838','#E05C5C','#5BBF7A','#9B6DD4','#E87D3E','#45B8C0','#D4597A','#8BC34A','#F06292','#26A69A','#FF7043','#7986CB','#A1887F','#78909C','#66BB6A'];
 
     const totalHrs  = data.reduce((s,e) => s + (+e.hours), 0);
@@ -989,7 +974,7 @@
       return result;
     }
 
-    const vk = showCost ? 'cost' : 'hours';
+    const vk = 'hours';
     const projItems = drawDonut('donut-projects', byProject, vk);
     const subItems  = drawDonut('donut-subprojects', bySubproject, vk);
 
@@ -1001,13 +986,13 @@
     ).join('');
 
     // Bar: by person
-    const sortedPeople = Object.entries(byPerson).sort((a,b) => showCost ? b[1].cost-a[1].cost : b[1].hours-a[1].hours);
-    const maxPerson = sortedPeople[0] ? (showCost ? sortedPeople[0][1].cost : sortedPeople[0][1].hours) : 1;
+    const sortedPeople = Object.entries(byPerson).sort((a,b) => b[1].hours - a[1].hours);
+    const maxPerson = sortedPeople[0] ? sortedPeople[0][1].hours : 1;
     document.getElementById('dash-by-person').innerHTML = sortedPeople.map(([name, d]) => {
       const idx = personIdx(name);
-      const val = showCost ? d.cost : d.hours;
-      const primary = showCost ? `€${Math.round(d.cost).toLocaleString('en-GB')}` : `${d.hours.toFixed(1)}h`;
-      const secondary = showCost ? `${d.hours.toFixed(1)}h` : (d.cost > 0 ? `€${Math.round(d.cost).toLocaleString('en-GB')}` : '');
+      const val = d.hours;
+      const primary = `${d.hours.toFixed(1)}h`;
+      const secondary = d.cost > 0 ? `€${Math.round(d.cost).toLocaleString('en-GB')}` : '';
       return `<div class="bar-row">
         <div class="person-cell bar-label" style="min-width:160px;max-width:160px;">
           <div class="avatar" style="background:${AVATAR_BG[idx]||'#D3D1C7'};color:${AVATAR_FG[idx]||'#444441'};">${initials(name)}</div>
@@ -1019,12 +1004,12 @@
     }).join('');
 
     // Bar: by project
-    const sortedProjects = Object.entries(byProject).sort((a,b) => showCost ? b[1].cost-a[1].cost : b[1].hours-a[1].hours);
-    const maxProject = sortedProjects[0] ? (showCost ? sortedProjects[0][1].cost : sortedProjects[0][1].hours) : 1;
+    const sortedProjects = Object.entries(byProject).sort((a,b) => b[1].hours - a[1].hours);
+    const maxProject = sortedProjects[0] ? sortedProjects[0][1].hours : 1;
     document.getElementById('dash-by-project').innerHTML = sortedProjects.map(([proj, d], i) => {
-      const val = showCost ? d.cost : d.hours;
-      const primary = showCost ? `€${Math.round(d.cost).toLocaleString('en-GB')}` : `${d.hours.toFixed(1)}h`;
-      const secondary = showCost ? `${d.hours.toFixed(1)}h` : (d.cost > 0 ? `€${Math.round(d.cost).toLocaleString('en-GB')}` : '');
+      const val = d.hours;
+      const primary = `${d.hours.toFixed(1)}h`;
+      const secondary = d.cost > 0 ? `€${Math.round(d.cost).toLocaleString('en-GB')}` : '';
       return `<div class="bar-row">
         <div class="bar-label" style="min-width:220px;max-width:220px;" title="${proj}">
           <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${proj}</div>
@@ -1036,12 +1021,12 @@
     }).join('');
 
     // Bar: by subproject
-    const sortedSubs = Object.entries(bySubproject).sort((a,b) => showCost ? b[1].cost-a[1].cost : b[1].hours-a[1].hours);
-    const maxSub = sortedSubs[0] ? (showCost ? sortedSubs[0][1].cost : sortedSubs[0][1].hours) : 1;
+    const sortedSubs = Object.entries(bySubproject).sort((a,b) => b[1].hours - a[1].hours);
+    const maxSub = sortedSubs[0] ? sortedSubs[0][1].hours : 1;
     document.getElementById('dash-by-subproject').innerHTML = sortedSubs.map(([sub, d], i) => {
-      const val = showCost ? d.cost : d.hours;
-      const primary = showCost ? `€${Math.round(d.cost).toLocaleString('en-GB')}` : `${d.hours.toFixed(1)}h`;
-      const secondary = showCost ? `${d.hours.toFixed(1)}h` : (d.cost > 0 ? `€${Math.round(d.cost).toLocaleString('en-GB')}` : '');
+      const val = d.hours;
+      const primary = `${d.hours.toFixed(1)}h`;
+      const secondary = d.cost > 0 ? `€${Math.round(d.cost).toLocaleString('en-GB')}` : '';
       return `<div class="bar-row">
         <div class="bar-label" style="min-width:220px;max-width:220px;" title="${sub}">
           <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${sub}</div>
@@ -1212,13 +1197,12 @@
     if (!data.length) { list.innerHTML = '<div class="empty">No entries found.</div>'; return; }
     list.innerHTML = data.map(e => {
       const idx = personIdx(e.person);
-      return `<div class="entry-row">
+      return `<div class="entry-row" style="grid-template-columns:130px 1fr 1fr 1fr 48px 70px 28px;">
         <div class="person-cell">
           <div class="avatar" style="background:${AVATAR_BG[idx]||'#D3D1C7'};color:${AVATAR_FG[idx]||'#444441'};">${initials(e.person)}</div>
           ${e.person}
         </div>
         <div class="muted">${e.project}</div>
-        <div class="muted">${e.event}</div>
         <div class="muted">${e.subproject || ''}</div>
         <div class="muted">${e.notes || ''}</div>
         <div style="font-weight:500;">${(+e.hours).toFixed(1)}h</div>
