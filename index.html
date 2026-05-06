@@ -906,6 +906,17 @@
     renderEntries();
   }
 
+  async function deleteEntryFromLog(id) {
+    if (!confirm('Delete this entry?')) return;
+    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
+      await fetch(buildUrl({ action: 'delete', id }));
+      await loadEntries();
+    } else {
+      entries = entries.filter(e => e.id != id);
+    }
+    renderPersonEntries();
+  }
+
   function openEditModal(id) {
     const e = entries.find(e => e.id == id);
     if (!e) return;
@@ -946,6 +957,7 @@
         closeEditModal();
         await loadEntries();
         renderEntries();
+        renderPersonEntries();
         toast('Entry updated!');
       } else { toast('Update failed — try again.'); }
     } catch(e) { toast('Network error.'); }
@@ -985,7 +997,10 @@
         <div class="muted">${e.notes || ''}</div>
         <div style="font-weight:500;">${(+e.hours).toFixed(1)}h</div>
         <div class="muted">${e.date}</div>
-        <div></div>
+        <div class="entry-actions">
+          <button class="edit-btn" onclick="openEditModal(${e.id})" title="Edit">✏️</button>
+          <button class="del-btn" onclick="deleteEntryFromLog(${e.id})" title="Delete">×</button>
+        </div>
       </div>`;
     }).join('');
   }
