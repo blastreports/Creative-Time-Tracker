@@ -110,6 +110,7 @@
   <button class="tab active" onclick="switchTab('log')">Log time</button>
   <button class="tab" onclick="switchTab('dashboard')">Dashboard</button>
   <button class="tab" onclick="switchTab('entries')">All entries</button>
+  <button class="tab" onclick="switchTab('settings')">Settings</button>
 </div>
 
 <div class="container">
@@ -567,9 +568,42 @@
     <div id="entries-list"></div>
   </div>
 
-</div>
+  <!-- SETTINGS -->
+  <div id="tab-settings" class="section">
+    <div class="card" style="margin-bottom:16px;">
+      <div class="section-title" style="margin-top:0;">Add a new project</div>
+      <div class="grid-2" style="margin-top:12px;">
+        <div class="form-row">
+          <label>Project name</label>
+          <input type="text" id="new-project-name" placeholder="e.g. SLAM 10 (X) 2027" />
+        </div>
+        <div class="form-row" style="display:flex;align-items:flex-end;">
+          <button class="btn btn-primary" style="width:auto;padding:10px 24px;" onclick="addProject()">Add project</button>
+        </div>
+      </div>
+      <div id="projects-list" style="margin-top:16px;"></div>
+    </div>
 
-<div class="toast" id="toast"></div>
+    <div class="card">
+      <div class="section-title" style="margin-top:0;">Add a subproject to an existing project</div>
+      <div class="grid-2" style="margin-top:12px;">
+        <div class="form-row">
+          <label>Project</label>
+          <select id="settings-project-select">
+            <option value="">Select project...</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>New subproject name</label>
+          <input type="text" id="new-subproject-name" placeholder="e.g. Motion Graphics" />
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width:auto;padding:10px 24px;margin-top:4px;" onclick="addSubproject()">Add subproject</button>
+      <div id="subprojects-list" style="margin-top:16px;"></div>
+    </div>
+  </div>
+
+</div></div>
 
 <script>
   // ── CONFIG ──────────────────────────────────────────────────────────────────
@@ -604,11 +638,12 @@
   }
 
   function switchTab(t) {
-    document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active', ['log','dashboard','entries'][i]===t));
+    document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active', ['log','dashboard','entries','settings'][i]===t));
     document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-'+t).classList.add('active');
     if (t === 'entries') loadEntries().then(renderEntries);
     if (t === 'dashboard' && unlocked) loadEntries().then(renderDash);
+    if (t === 'settings') renderSettingsLists();
   }
 
   // ── GOOGLE SHEETS INTEGRATION ────────────────────────────────────────────────
@@ -848,6 +883,105 @@
       </div>`;
     }).join('');
   }
+
+  // ── SETTINGS ─────────────────────────────────────────────────────────────────
+  function getAllProjects() {
+    return Object.keys(PROJECT_SUBPROJECTS).filter(k => k !== '__none__').sort();
+  }
+
+  function getAllSubprojects() {
+    return [...new Set(Object.values(PROJECT_SUBPROJECTS).flat())].sort();
+  }
+
+  function refreshAllDropdowns() {
+    const projects = getAllProjects();
+    const subprojects = getAllSubprojects();
+
+    // Helper to rebuild a project select
+    function rebuildProjectSelect(id, includeAll) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const cur = el.value;
+      el.innerHTML = (includeAll ? '<option value="">All projects</option>' : '<option value="">Select project...</option>') +
+        projects.map(p => `<option${p===cur?' selected':''}>${p}</option>`).join('');
+    }
+
+    // Helper to rebuild a subproject select
+    function rebuildSubprojectSelect(id, includeAll) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const cur = el.value;
+      el.innerHTML = (includeAll ? '<option value="">All subprojects</option>' : '<option value="">Select subproject...</option>') +
+        subprojects.map(s => `<option${s===cur?' selected':''}>${s}</option>`).join('');
+    }
+
+    rebuildProjectSelect('project', false);
+    rebuildProjectSelect('dash-filter-project', true);
+    rebuildProjectSelect('entries-filter-project', true);
+    rebuildProjectSelect('log-filter-project', true);
+    rebuildProjectSelect('settings-project-select', false);
+    rebuildSubprojectSelect('event', false);
+    rebuildSubprojectSelect('entries-filter-subproject', true);
+    rebuildSubprojectSelect('log-filter-subproject', true);
+  }
+
+  function renderSettingsLists() {
+    // Populate project select in settings
+    refreshAllDropdowns();
+
+    // Projects list
+    const projects = getAllProjects();
+    document.getElementById('projects-list').innerHTML = projects.length ? `
+      <div class="section-title">Current projects (${projects.length})</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">
+        ${projects.map(p => `<span style="background:var(--bg2);border:0.5px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:12px;">${p}</span>`).join('')}
+      </div>` : '';
+
+    // Show subprojects for selected project
+    renderSubprojectsList();
+  }
+
+  function renderSubprojectsList() {
+    const proj = document.getElementById('settings-project-select').value;
+    const el = document.getElementById('subprojects-list');
+    if (!proj) { el.innerHTML = ''; return; }
+    const subs = PROJECT_SUBPROJECTS[proj] || [];
+    el.innerHTML = subs.length ? `
+      <div class="section-title" style="margin-top:12px;">Subprojects for "${proj}" (${subs.length})</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">
+        ${subs.map(s => `<span style="background:var(--bg2);border:0.5px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:12px;">${s}</span>`).join('')}
+      </div>` : `<div class="small" style="margin-top:8px;color:var(--text3);">No subprojects yet for this project.</div>`;
+  }
+
+  function addProject() {
+    const name = document.getElementById('new-project-name').value.trim();
+    if (!name) { toast('Please enter a project name.'); return; }
+    if (PROJECT_SUBPROJECTS[name]) { toast('Project already exists.'); return; }
+    PROJECT_SUBPROJECTS[name] = ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"];
+    document.getElementById('new-project-name').value = '';
+    refreshAllDropdowns();
+    renderSettingsLists();
+    toast(`Project "${name}" added!`);
+  }
+
+  function addSubproject() {
+    const proj = document.getElementById('settings-project-select').value;
+    const name = document.getElementById('new-subproject-name').value.trim();
+    if (!proj) { toast('Please select a project first.'); return; }
+    if (!name) { toast('Please enter a subproject name.'); return; }
+    if (!PROJECT_SUBPROJECTS[proj]) PROJECT_SUBPROJECTS[proj] = [];
+    if (PROJECT_SUBPROJECTS[proj].includes(name)) { toast('Subproject already exists for this project.'); return; }
+    PROJECT_SUBPROJECTS[proj].push(name);
+    document.getElementById('new-subproject-name').value = '';
+    refreshAllDropdowns();
+    renderSubprojectsList();
+    toast(`Subproject "${name}" added to "${proj}"!`);
+  }
+
+  // Listen for project select change in settings to show its subprojects
+  document.addEventListener('change', e => {
+    if (e.target.id === 'settings-project-select') renderSubprojectsList();
+  });
 
   function updateSubprojects() {
     const proj = document.getElementById('project').value;
