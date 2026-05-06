@@ -897,6 +897,18 @@
 
 
 
+  function populateDashFilters() {
+    const projects = [...new Set(entries.map(e => e.project).filter(Boolean))].sort();
+    const people   = [...new Set(entries.map(e => e.person).filter(Boolean))].sort();
+    const projSel  = document.getElementById('dash-filter-project');
+    const persSel  = document.getElementById('dash-filter-person');
+    if (!projSel || !persSel) return;
+    const curProj = projSel.value;
+    const curPers = persSel.value;
+    projSel.innerHTML = '<option value="">All projects</option>' + projects.map(p => `<option${p===curProj?' selected':''}>${p}</option>`).join('');
+    persSel.innerHTML = '<option value="">All people</option>' + people.map(p => `<option${p===curPers?' selected':''}>${p}</option>`).join('');
+  }
+
   function filteredDash() {
     const proj     = document.getElementById('dash-filter-project')?.value || '';
     const person   = document.getElementById('dash-filter-person')?.value || '';
@@ -919,6 +931,7 @@
   }
 
   function renderDash() {
+    populateDashFilters();
     const data = filteredDash();
     const DONUT_COLORS = ['#4A90D9','#E8A838','#E05C5C','#5BBF7A','#9B6DD4','#E87D3E','#45B8C0','#D4597A','#8BC34A','#F06292','#26A69A','#FF7043','#7986CB','#A1887F','#78909C','#66BB6A'];
 
@@ -983,7 +996,8 @@
         result.push({ label, color, pct: Math.round(vals[valueKey]/total*100), val: vals[valueKey] });
       });
       ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
-      ctx.fillStyle = '#ffffff'; ctx.fill();
+      const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#ffffff';
+      ctx.fillStyle = bgColor || '#ffffff'; ctx.fill();
       return result;
     }
 
