@@ -65,8 +65,8 @@
     .bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
     .bar-hrs { font-size: 12px; color: var(--text2); min-width: 40px; text-align: right; }
     .section-title { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin: 20px 0 10px; }
-    .entry-row { display: grid; grid-template-columns: 100px 130px 110px 1fr 110px 50px 85px 44px; gap: 8px; align-items: center; padding: 10px 14px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; font-size: 13px; }
-    .entry-header { display: grid; grid-template-columns: 100px 130px 110px 1fr 110px 50px 85px 44px; gap: 8px; align-items: center; padding: 6px 14px; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .entry-row { display: grid; grid-template-columns: 110px 120px 110px 1fr 100px 48px 82px 44px; gap: 6px; align-items: center; padding: 10px 14px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; font-size: 13px; min-width: 0; }
+    .entry-header { display: grid; grid-template-columns: 110px 120px 110px 1fr 100px 48px 82px 44px; gap: 6px; align-items: center; padding: 6px 14px; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
     .entry-row:hover { border-color: var(--border2); }
     .avatar { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; flex-shrink: 0; }
     .person-cell { display: flex; align-items: center; gap: 7px; }
@@ -382,7 +382,7 @@
           <option>Studio GFX</option><option>Vacation</option><option>Venue GFX</option><option>eChampionship</option>
         </select>
       </div>
-      <div class="entry-header" style="grid-template-columns:100px 130px 110px 1fr 110px 50px 85px 44px;">
+      <div class="entry-header" style="grid-template-columns:110px 120px 110px 1fr 100px 48px 82px 44px;">
         <div>Person</div>
         <div>Project</div>
         <div>Subproject</div>
@@ -1226,7 +1226,7 @@
     if (!data.length) { list.innerHTML = '<div class="empty">No entries found.</div>'; return; }
     list.innerHTML = data.map(e => {
       const idx = personIdx(e.person);
-      return `<div class="entry-row" style="grid-template-columns:100px 130px 110px 1fr 110px 50px 85px 44px;">
+      return `<div class="entry-row" style="grid-template-columns:110px 120px 110px 1fr 100px 48px 82px 44px;">
         <div class="person-cell">
           <div class="avatar" style="background:${AVATAR_BG[idx]||'#D3D1C7'};color:${AVATAR_FG[idx]||'#444441'};">${initials(e.person)}</div>
           ${e.person}
