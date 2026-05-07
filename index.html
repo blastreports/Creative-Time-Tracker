@@ -664,7 +664,7 @@
     </div>
   </div>
 
-</div></div>
+</div>
 
 <!-- EDIT MODAL -->
 <div class="modal-overlay" id="edit-modal" style="display:none;" onclick="if(event.target===this)closeEditModal()">
@@ -716,16 +716,19 @@
   </div>
 </div>
 
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
 <script>
   // ── CONFIG ──────────────────────────────────────────────────────────────────
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwHqByWspFx4T36b0O2NUZBqoD9TiwrgTTgA5qdMAg8vt1k_1yxxp5UD2GRE0HwtFkV/exec';
-  const DASHBOARD_PASSWORD = 'manager2024'; // Change this!
+  const DASHBOARD_PASSWORD = 'manager2024';
   // ────────────────────────────────────────────────────────────────────────────
 
   const COLORS = ['#378ADD','#1D9E75','#D85A30','#D4537E','#BA7517','#639922','#7F77DD','#888780','#E24B4A','#0F6E56','#993C1D','#534AB7'];
   const AVATAR_BG = ['#B5D4F4','#9FE1CB','#F5C4B3','#F4C0D1','#FAC775','#C0DD97','#CECBF6','#D3D1C7','#F7C1C1','#5DCAA5','#F0997B','#AFA9EC'];
   const AVATAR_FG = ['#0C447C','#085041','#712B13','#72243E','#633806','#3B6D11','#3C3489','#444441','#791F1F','#04342C','#993C1D','#26215C'];
-  
+
   const PROJECT_SUBPROJECTS = {"Brawl Stars Spring Split 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Brawl Stars Brawl Cup 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Brawl Stars Summer Split 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Brawl Stars LCQ 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Brawl Stars World Finals 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Brawl Stars General 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Premier General": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "BLAST TV 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Dota General 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "SLAM 6 (VI) 2026 - Malta": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "SLAM 7 (VII) 2026 - Copenhagen": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "SLAM 8 (VIII) 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "SLAM 9 (IX) 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS Legends Landing 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Major 1 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Major 1 Summit 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Major 2 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Major 3 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Competition Operations 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Last Chance Qualifiers 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Non-event specific 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "FNCS: Pro-Am 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Fortnite Mobile Series 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Fortnite Reload Elite Series": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Premier: Bounty (S1) 2026 - Malta": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Premier: Open (S1) 2026 - Rotterdam": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Premier: Rivals (S1) 2026 - Fort Worth": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Premier: Bounty (S2) 2026 - Malta": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Premier: Open (S2) 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Premier: Rivals (S2) 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: APL Challenger Series 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: APL Kickoff 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: APL Regional Finals 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: EML Challenger Series 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: EML Kickoff 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: EML Regional Finals 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Last Chance Qualifier 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Major 1 2026 - Salt Lake City": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Major 2 2026 - Osaka": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: NAL Challenger Series 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: NAL Kickoff 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: NAL Regional Finals 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Non-Event Related 2026/2027": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: SAL Challenger Series 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: SAL Kickoff 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: SAL Regional Finals 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Six Invitational 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Six Invitational 2027": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 1 APL 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 1 EML 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 1 NAL 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 1 SAL 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 2 APL 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 2 EML 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 2 NAL 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "R6: Split 2 SAL 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: CRL 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Online Qualifier (1v1 + 2v2) - EU/NA 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Online Qualifier (1v1 + 2v2) - Rest of World 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Last Chance Qualifier 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Major 1 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Major 2 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Non-event specific 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Online Qualifiers (Major 1) 2026 - EU/NA": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Online Qualifiers (Major 1) 2026 - Rest of World": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Online Qualifiers (Major 2) 2026 - EU/NA": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Online Qualifiers (Major 2) 2026 - Rest of World": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "RLCS: Worlds Championship 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Wimbledon 2026": ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"], "Internal": ["Vacation", "In-Lieu", "Sick", "IT Infrastructure", "Meetings", "Administrative Tasks", "Internal Decks", "Host City tasks", "Nothing to do", "Maternity/Paternity", "Creative Exploration / Creative Education", "Project Management / Planning"], "Commercial": ["eChampionship", "FC Pro"], "__none__": ["Merch", "HUD"]};
   const PEOPLE = ['Huy','Ida','Lasse','Louis','Marcell','Neno','Nicolaj','Peter','Stephan','Victor','Yana','Helena'];
 
@@ -764,30 +767,37 @@
     return url.toString();
   }
 
+  // ── FIXED: postEntry now uses POST with JSON body ────────────────────────────
   async function postEntry(entry) {
     if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
       entries.unshift(entry);
       return true;
     }
-    const url = buildUrl({
-      action: 'add',
-      id: entry.id,
-      person: entry.person,
-      date: entry.date,
-      project: entry.project,
-      event: entry.event,
-      hours: entry.hours,
-      notes: entry.notes || ''
-    });
-    const res = await fetch(url);
-    const data = await res.json();
-    return data.status === 'ok';
+    try {
+      const res = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'add',
+          id: entry.id,
+          person: entry.person,
+          date: entry.date,
+          project: entry.project,
+          event: entry.event,
+          subproject: entry.subproject || '',
+          hours: entry.hours,
+          notes: entry.notes || ''
+        })
+      });
+      const data = await res.json();
+      return data.status === 'ok';
+    } catch(e) {
+      console.error('postEntry failed:', e);
+      return false;
+    }
   }
 
   async function loadEntries() {
-    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
-      return;
-    }
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return;
     try {
       const res = await fetch(buildUrl({ action: 'get' }));
       const data = await res.json();
@@ -812,7 +822,7 @@
     const btn = document.querySelector('#tab-log .btn-primary');
     btn.textContent = 'Saving...'; btn.disabled = true;
     try {
-      const ok = await postEntry({ id: Date.now(), person, date, project, event, hours, notes });
+      const ok = await postEntry({ id: Date.now(), person, date, project, event, subproject: event, hours, notes });
       if (ok) {
         toast('Hours logged!');
         document.getElementById('event').value = '';
@@ -838,31 +848,22 @@
   }
 
   // ── DASHBOARD ────────────────────────────────────────────────────────────────
-  const DEFAULT_RATE = 25; // €/hour — change this default here
-  let rates = {}; // per-person overrides e.g. { "Huy": 30 }
+  const DEFAULT_RATE = 25;
+  let rates = {};
   let ratesLoaded = false;
 
   async function loadRates() {
-    const statusEl = document.getElementById('rates-status');
-    if (statusEl) statusEl.textContent = '';
     try {
       const res = await fetch(buildUrl({ action: 'getRates' }));
       const data = await res.json();
       rates = data.rates || {};
       ratesLoaded = true;
-    } catch(e) {
-      ratesLoaded = true; // use defaults
-    }
+    } catch(e) { ratesLoaded = true; }
     renderRateEditor();
   }
 
-  function getRate(person) {
-    return rates[person] != null ? rates[person] : DEFAULT_RATE;
-  }
-
-  function getCost(person, hours) {
-    return getRate(person) * hours;
-  }
+  function getRate(person) { return rates[person] != null ? rates[person] : DEFAULT_RATE; }
+  function getCost(person, hours) { return getRate(person) * hours; }
 
   function renderRateEditor() {
     const el = document.getElementById('rate-editor');
@@ -890,12 +891,8 @@
     if (isNaN(rate) || rate < 0) return;
     rates[person] = rate;
     renderDash();
-    try {
-      await fetch(buildUrl({ action: 'saveSetting', type: `rate:${person}`, value: rate }));
-    } catch(e) {}
+    try { await fetch(buildUrl({ action: 'saveSetting', type: `rate:${person}`, value: rate })); } catch(e) {}
   }
-
-
 
   function populateDashFilters() {
     const projects = [...new Set(entries.map(e => e.project).filter(Boolean))].sort();
@@ -903,8 +900,7 @@
     const projSel  = document.getElementById('dash-filter-project');
     const persSel  = document.getElementById('dash-filter-person');
     if (!projSel || !persSel) return;
-    const curProj = projSel.value;
-    const curPers = persSel.value;
+    const curProj = projSel.value, curPers = persSel.value;
     projSel.innerHTML = '<option value="">All projects</option>' + projects.map(p => `<option${p===curProj?' selected':''}>${p}</option>`).join('');
     persSel.innerHTML = '<option value="">All people</option>' + people.map(p => `<option${p===curPers?' selected':''}>${p}</option>`).join('');
   }
@@ -922,23 +918,13 @@
     );
   }
 
-
-  function fmt(val, showCost) {
-    if (showCost) {
-      return val != null ? `€${val.toLocaleString('en-GB', {minimumFractionDigits:0, maximumFractionDigits:0})}` : '—';
-    }
-    return `${(+val).toLocaleString('en-GB', {minimumFractionDigits:1, maximumFractionDigits:1})}h`;
-  }
-
   function renderDash() {
     populateDashFilters();
     const data = filteredDash();
     const DONUT_COLORS = ['#4A90D9','#E8A838','#E05C5C','#5BBF7A','#9B6DD4','#E87D3E','#45B8C0','#D4597A','#8BC34A','#F06292','#26A69A','#FF7043','#7986CB','#A1887F','#78909C','#66BB6A'];
-
     const totalHrs  = data.reduce((s,e) => s + (+e.hours), 0);
     const totalCost = data.reduce((s,e) => s + getCost(e.person, +e.hours), 0);
 
-    // Summary cards
     document.getElementById('dash-metrics').innerHTML = `
       <div class="summary-cards">
         <div class="summary-card green">
@@ -959,11 +945,9 @@
       return;
     }
 
-    // Aggregate
     const byProject = {}, bySubproject = {}, byPerson = {};
     data.forEach(e => {
-      const hrs = +e.hours;
-      const cost = getCost(e.person, hrs) || 0;
+      const hrs = +e.hours, cost = getCost(e.person, hrs) || 0;
       if (!byProject[e.project]) byProject[e.project] = { hours: 0, cost: 0 };
       byProject[e.project].hours += hrs; byProject[e.project].cost += cost;
       const sub = e.subproject || '(none)';
@@ -973,7 +957,6 @@
       byPerson[e.person].hours += hrs; byPerson[e.person].cost += cost;
     });
 
-    // Donut chart
     function drawDonut(canvasId, dataMap, valueKey) {
       const canvas = document.getElementById(canvasId);
       if (!canvas) return [];
@@ -996,93 +979,61 @@
         result.push({ label, color, pct: Math.round(vals[valueKey]/total*100), val: vals[valueKey] });
       });
       ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
-      const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#ffffff';
-      ctx.fillStyle = bgColor || '#ffffff'; ctx.fill();
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#ffffff';
+      ctx.fill();
       return result;
     }
 
-    const vk = 'hours';
-    const projItems = drawDonut('donut-projects', byProject, vk);
-    const subItems  = drawDonut('donut-subprojects', bySubproject, vk);
-
+    const projItems = drawDonut('donut-projects', byProject, 'hours');
+    const subItems  = drawDonut('donut-subprojects', bySubproject, 'hours');
     document.getElementById('legend-projects').innerHTML = projItems.map(d =>
-      `<div class="legend-item"><div class="legend-dot" style="background:${d.color}"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.label}</span><span style="margin-left:8px;font-weight:600;">${d.pct}%</span></div>`
-    ).join('');
+      `<div class="legend-item"><div class="legend-dot" style="background:${d.color}"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.label}</span><span style="margin-left:8px;font-weight:600;">${d.pct}%</span></div>`).join('');
     document.getElementById('legend-subprojects').innerHTML = subItems.map(d =>
-      `<div class="legend-item"><div class="legend-dot" style="background:${d.color}"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.label}</span><span style="margin-left:8px;font-weight:600;">${d.pct}%</span></div>`
-    ).join('');
+      `<div class="legend-item"><div class="legend-dot" style="background:${d.color}"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.label}</span><span style="margin-left:8px;font-weight:600;">${d.pct}%</span></div>`).join('');
 
-    // Cost donuts
     const projCostItems = drawDonut('donut-projects-cost', byProject, 'cost');
     const subCostItems  = drawDonut('donut-subprojects-cost', bySubproject, 'cost');
-    const totalProjCost = Object.values(byProject).reduce((s,v) => s + v.cost, 0);
-    const totalSubCost  = Object.values(bySubproject).reduce((s,v) => s + v.cost, 0);
-
     document.getElementById('legend-projects-cost').innerHTML = projCostItems.map(d =>
-      `<div class="legend-item"><div class="legend-dot" style="background:${d.color}"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.label}</span><span style="margin-left:8px;font-weight:600;">€${Math.round(d.val).toLocaleString('en-GB')}</span></div>`
-    ).join('');
+      `<div class="legend-item"><div class="legend-dot" style="background:${d.color}"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.label}</span><span style="margin-left:8px;font-weight:600;">€${Math.round(d.val).toLocaleString('en-GB')}</span></div>`).join('');
     document.getElementById('legend-subprojects-cost').innerHTML = subCostItems.map(d =>
-      `<div class="legend-item"><div class="legend-dot" style="background:${d.color}"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.label}</span><span style="margin-left:8px;font-weight:600;">€${Math.round(d.val).toLocaleString('en-GB')}</span></div>`
-    ).join('');
+      `<div class="legend-item"><div class="legend-dot" style="background:${d.color}"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.label}</span><span style="margin-left:8px;font-weight:600;">€${Math.round(d.val).toLocaleString('en-GB')}</span></div>`).join('');
 
-    // Bar: by person
     const sortedPeople = Object.entries(byPerson).sort((a,b) => b[1].hours - a[1].hours);
     const maxPerson = sortedPeople[0] ? sortedPeople[0][1].hours : 1;
     document.getElementById('dash-by-person').innerHTML = sortedPeople.map(([name, d]) => {
       const idx = personIdx(name);
-      const val = d.hours;
-      const primary = `${d.hours.toLocaleString('en-GB', {minimumFractionDigits:1, maximumFractionDigits:1})}h`;
-      const costStr = d.cost > 0 ? `€${Math.round(d.cost).toLocaleString('en-GB')}` : '';
       return `<div class="bar-row">
         <div class="person-cell bar-label" style="min-width:160px;max-width:160px;">
           <div class="avatar" style="background:${AVATAR_BG[idx]||'#D3D1C7'};color:${AVATAR_FG[idx]||'#444441'};">${initials(name)}</div>
           <div>${name}</div>
         </div>
-        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(val/maxPerson*100)}%;background:${COLORS[idx%COLORS.length]};"></div></div>
-        <div style="min-width:130px;text-align:right;"><div style="font-weight:600;font-size:13px;">${primary}</div>${costStr?`<div style="font-size:11px;color:var(--text3);">${costStr}</div>`:''}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(d.hours/maxPerson*100)}%;background:${COLORS[idx%COLORS.length]};"></div></div>
+        <div style="min-width:130px;text-align:right;"><div style="font-weight:600;font-size:13px;">${d.hours.toLocaleString('en-GB',{minimumFractionDigits:1,maximumFractionDigits:1})}h</div>${d.cost>0?`<div style="font-size:11px;color:var(--text3);">€${Math.round(d.cost).toLocaleString('en-GB')}</div>`:''}</div>
       </div>`;
     }).join('');
 
-    // Bar: by project
     const sortedProjects = Object.entries(byProject).sort((a,b) => b[1].hours - a[1].hours);
     const maxProject = sortedProjects[0] ? sortedProjects[0][1].hours : 1;
-    document.getElementById('dash-by-project').innerHTML = sortedProjects.map(([proj, d], i) => {
-      const val = d.hours;
-      const primary = `${d.hours.toLocaleString('en-GB', {minimumFractionDigits:1, maximumFractionDigits:1})}h`;
-      const costStr = d.cost > 0 ? `€${Math.round(d.cost).toLocaleString('en-GB')}` : '';
-      return `<div class="bar-row">
-        <div class="bar-label" style="min-width:220px;max-width:220px;" title="${proj}">
-          <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${proj}</div>
-        </div>
-        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(val/maxProject*100)}%;background:${DONUT_COLORS[i%DONUT_COLORS.length]};"></div></div>
-        <div style="min-width:130px;text-align:right;"><div style="font-weight:600;font-size:13px;">${primary}</div>${costStr?`<div style="font-size:11px;color:var(--text3);">${costStr}</div>`:''}</div>
-      </div>`;
-    }).join('');
+    document.getElementById('dash-by-project').innerHTML = sortedProjects.map(([proj, d], i) =>
+      `<div class="bar-row">
+        <div class="bar-label" style="min-width:220px;max-width:220px;" title="${proj}"><div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${proj}</div></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(d.hours/maxProject*100)}%;background:${DONUT_COLORS[i%DONUT_COLORS.length]};"></div></div>
+        <div style="min-width:130px;text-align:right;"><div style="font-weight:600;font-size:13px;">${d.hours.toLocaleString('en-GB',{minimumFractionDigits:1,maximumFractionDigits:1})}h</div>${d.cost>0?`<div style="font-size:11px;color:var(--text3);">€${Math.round(d.cost).toLocaleString('en-GB')}</div>`:''}</div>
+      </div>`).join('');
 
-    // Bar: by subproject
     const sortedSubs = Object.entries(bySubproject).sort((a,b) => b[1].hours - a[1].hours);
     const maxSub = sortedSubs[0] ? sortedSubs[0][1].hours : 1;
-    document.getElementById('dash-by-subproject').innerHTML = sortedSubs.map(([sub, d], i) => {
-      const val = d.hours;
-      const primary = `${d.hours.toLocaleString('en-GB', {minimumFractionDigits:1, maximumFractionDigits:1})}h`;
-      const costStr = d.cost > 0 ? `€${Math.round(d.cost).toLocaleString('en-GB')}` : '';
-      return `<div class="bar-row">
-        <div class="bar-label" style="min-width:220px;max-width:220px;" title="${sub}">
-          <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${sub}</div>
-        </div>
-        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(val/maxSub*100)}%;background:${DONUT_COLORS[i%DONUT_COLORS.length]};"></div></div>
-        <div style="min-width:130px;text-align:right;"><div style="font-weight:600;font-size:13px;">${primary}</div>${costStr?`<div style="font-size:11px;color:var(--text3);">${costStr}</div>`:''}</div>
-      </div>`;
-    }).join('');
+    document.getElementById('dash-by-subproject').innerHTML = sortedSubs.map(([sub, d], i) =>
+      `<div class="bar-row">
+        <div class="bar-label" style="min-width:220px;max-width:220px;" title="${sub}"><div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${sub}</div></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(d.hours/maxSub*100)}%;background:${DONUT_COLORS[i%DONUT_COLORS.length]};"></div></div>
+        <div style="min-width:130px;text-align:right;"><div style="font-weight:600;font-size:13px;">${d.hours.toLocaleString('en-GB',{minimumFractionDigits:1,maximumFractionDigits:1})}h</div>${d.cost>0?`<div style="font-size:11px;color:var(--text3);">€${Math.round(d.cost).toLocaleString('en-GB')}</div>`:''}</div>
+      </div>`).join('');
 
-    // Detail table
-    const tableData = data.slice().sort((a,b) => a.date.localeCompare(b.date));
     document.getElementById('dash-detail-table').innerHTML = `
       <table class="dash-table">
-        <thead><tr>
-          <th>Date</th><th>Staff</th><th>Project</th><th>Subproject</th><th>Notes</th><th style="text-align:right;">Hours</th><th style="text-align:right;">Cost</th>
-        </tr></thead>
-        <tbody>${tableData.map(e => {
+        <thead><tr><th>Date</th><th>Staff</th><th>Project</th><th>Subproject</th><th>Notes</th><th style="text-align:right;">Hours</th><th style="text-align:right;">Cost</th></tr></thead>
+        <tbody>${data.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(e => {
           const cost = getCost(e.person, +e.hours);
           return `<tr>
             <td>${e.date}</td>
@@ -1090,8 +1041,8 @@
             <td>${e.project}</td>
             <td style="color:var(--text2);">${e.subproject||''}</td>
             <td style="color:var(--text2);">${e.notes||''}</td>
-            <td style="text-align:right;font-weight:500;">${(+e.hours).toLocaleString('en-GB', {minimumFractionDigits:1, maximumFractionDigits:1})}</td>
-            <td style="text-align:right;font-weight:500;">${cost!=null?'€'+cost.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}):'—'}</td>
+            <td style="text-align:right;font-weight:500;">${(+e.hours).toLocaleString('en-GB',{minimumFractionDigits:1,maximumFractionDigits:1})}</td>
+            <td style="text-align:right;font-weight:500;">€${cost.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
           </tr>`;
         }).join('')}</tbody>
       </table>`;
@@ -1111,34 +1062,26 @@
       (!dateFrom   || e.date >= dateFrom) &&
       (!dateTo     || e.date <= dateTo)
     ).slice().sort((a,b) => a.date.localeCompare(b.date));
-    const list   = document.getElementById('entries-list');
+    const list = document.getElementById('entries-list');
     if (!data.length) { list.innerHTML = '<div class="empty">No entries found.</div>'; return; }
-    const header = `<div class="entry-header">
-      <div>Person</div>
-      <div>Project</div>
-      <div>Event</div>
-      <div>Subproject</div>
-      <div>Notes</div>
-      <div>Hours</div>
-      <div>Date</div>
-      <div></div>
-    </div>`;
-    list.innerHTML = header + data.map(e => {
+    list.innerHTML = `<div class="entry-header">
+      <div>Person</div><div>Project</div><div>Event</div><div>Subproject</div><div>Notes</div><div>Hours</div><div>Date</div><div></div>
+    </div>` + data.map(e => {
       const idx = personIdx(e.person);
       return `<div class="entry-row">
         <div class="person-cell">
           <div class="avatar" style="background:${AVATAR_BG[idx]||'#D3D1C7'};color:${AVATAR_FG[idx]||'#444441'};">${initials(e.person)}</div>
           ${e.person}
         </div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.project || ''}</div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.event || ''}</div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.subproject || ''}</div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.notes || ''}</div>
-        <div style="font-weight:500;">${(+e.hours).toLocaleString('en-GB', {minimumFractionDigits:1, maximumFractionDigits:1})}h</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.project||''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.event||''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.subproject||''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.notes||''}</div>
+        <div style="font-weight:500;">${(+e.hours).toLocaleString('en-GB',{minimumFractionDigits:1,maximumFractionDigits:1})}h</div>
         <div style="color:var(--text2);">${e.date}</div>
         <div class="entry-actions">
           <button class="edit-btn" onclick="openEditModal(${e.id})" title="Edit">✏️</button>
-          <button class="del-btn" onclick="deleteEntry(${e.id})" title="Delete">×</button>
+          <button class="edit-btn" onclick="deleteEntry(${e.id})" title="Delete" style="color:#E24B4A;">×</button>
         </div>
       </div>`;
     }).join('');
@@ -1149,9 +1092,7 @@
     if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
       await fetch(buildUrl({ action: 'delete', id }));
       await loadEntries();
-    } else {
-      entries = entries.filter(e => e.id != id);
-    }
+    } else { entries = entries.filter(e => e.id != id); }
     renderEntries();
   }
 
@@ -1160,9 +1101,7 @@
     if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_APPS_SCRIPT_URL_HERE') {
       await fetch(buildUrl({ action: 'delete', id }));
       await loadEntries();
-    } else {
-      entries = entries.filter(e => e.id != id);
-    }
+    } else { entries = entries.filter(e => e.id != id); }
     renderPersonEntries();
   }
 
@@ -1180,9 +1119,7 @@
     document.getElementById('edit-modal').style.display = 'flex';
   }
 
-  function closeEditModal() {
-    document.getElementById('edit-modal').style.display = 'none';
-  }
+  function closeEditModal() { document.getElementById('edit-modal').style.display = 'none'; }
 
   async function saveEdit() {
     const id         = document.getElementById('edit-id').value;
@@ -1205,8 +1142,7 @@
       if (data.status === 'ok') {
         closeEditModal();
         await loadEntries();
-        renderEntries();
-        renderPersonEntries();
+        renderEntries(); renderPersonEntries();
         toast('Entry updated!');
       } else { toast('Update failed — try again.'); }
     } catch(e) { toast('Network error.'); }
@@ -1240,51 +1176,39 @@
           <div class="avatar" style="background:${AVATAR_BG[idx]||'#D3D1C7'};color:${AVATAR_FG[idx]||'#444441'};">${initials(e.person)}</div>
           ${e.person}
         </div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.project || ''}</div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.event || ''}</div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.subproject || ''}</div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.notes || ''}</div>
-        <div style="font-weight:500;">${(+e.hours).toLocaleString('en-GB', {minimumFractionDigits:1, maximumFractionDigits:1})}h</div>
-        <div style="color:var(--text2);">${e.date || ''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.project||''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.event||''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.subproject||''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.notes||''}</div>
+        <div style="font-weight:500;">${(+e.hours).toLocaleString('en-GB',{minimumFractionDigits:1,maximumFractionDigits:1})}h</div>
+        <div style="color:var(--text2);">${e.date||''}</div>
         <div class="entry-actions">
           <button class="edit-btn" onclick="openEditModal(${e.id})" title="Edit">✏️</button>
-          <button class="del-btn" onclick="deleteEntryFromLog(${e.id})" title="Delete">×</button>
+          <button class="edit-btn" onclick="deleteEntryFromLog(${e.id})" title="Delete" style="color:#E24B4A;">×</button>
         </div>
       </div>`;
     }).join('');
   }
 
   // ── SETTINGS ─────────────────────────────────────────────────────────────────
-  function getAllProjects() {
-    return Object.keys(PROJECT_SUBPROJECTS).filter(k => k !== '__none__').sort();
-  }
-
-  function getAllSubprojects() {
-    return [...new Set(Object.values(PROJECT_SUBPROJECTS).flat())].sort();
-  }
+  function getAllProjects() { return Object.keys(PROJECT_SUBPROJECTS).filter(k => k !== '__none__').sort(); }
+  function getAllSubprojects() { return [...new Set(Object.values(PROJECT_SUBPROJECTS).flat())].sort(); }
 
   function refreshAllDropdowns() {
     const projects = getAllProjects();
     const subprojects = getAllSubprojects();
-
-    // Helper to rebuild a project select
     function rebuildProjectSelect(id, includeAll) {
-      const el = document.getElementById(id);
-      if (!el) return;
+      const el = document.getElementById(id); if (!el) return;
       const cur = el.value;
       el.innerHTML = (includeAll ? '<option value="">All projects</option>' : '<option value="">Select project...</option>') +
         projects.map(p => `<option${p===cur?' selected':''}>${p}</option>`).join('');
     }
-
-    // Helper to rebuild a subproject select
     function rebuildSubprojectSelect(id, includeAll) {
-      const el = document.getElementById(id);
-      if (!el) return;
+      const el = document.getElementById(id); if (!el) return;
       const cur = el.value;
       el.innerHTML = (includeAll ? '<option value="">All subprojects</option>' : '<option value="">Select subproject...</option>') +
         subprojects.map(s => `<option${s===cur?' selected':''}>${s}</option>`).join('');
     }
-
     rebuildProjectSelect('project', false);
     rebuildProjectSelect('dash-filter-project', true);
     rebuildProjectSelect('entries-filter-project', true);
@@ -1296,18 +1220,13 @@
   }
 
   function renderSettingsLists() {
-    // Populate project select in settings
     refreshAllDropdowns();
-
-    // Projects list
     const projects = getAllProjects();
     document.getElementById('projects-list').innerHTML = projects.length ? `
       <div class="section-title">Current projects (${projects.length})</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">
         ${projects.map(p => `<span style="background:var(--bg2);border:0.5px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:12px;">${p}</span>`).join('')}
       </div>` : '';
-
-    // Show subprojects for selected project
     renderSubprojectsList();
   }
 
@@ -1320,7 +1239,8 @@
       <div class="section-title" style="margin-top:12px;">Subprojects for "${proj}" (${subs.length})</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">
         ${subs.map(s => `<span style="background:var(--bg2);border:0.5px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:12px;">${s}</span>`).join('')}
-      </div>` : `<div class="small" style="margin-top:8px;color:var(--text3);">No subprojects yet for this project.</div>`;
+      </div>` :
+      `<div class="small" style="margin-top:8px;color:var(--text3);">No subprojects yet for this project.</div>`;
   }
 
   function addProject() {
@@ -1329,8 +1249,7 @@
     if (PROJECT_SUBPROJECTS[name]) { toast('Project already exists.'); return; }
     PROJECT_SUBPROJECTS[name] = ["Identity Production", "Broadcast GFX", "Venue GFX", "Commercial", "Print", "Content GFX", "Marketing", "RFP", "Studio GFX", "SoMe GFX / Social"];
     document.getElementById('new-project-name').value = '';
-    refreshAllDropdowns();
-    renderSettingsLists();
+    refreshAllDropdowns(); renderSettingsLists();
     saveProjectToSheet(name);
     toast(`Project "${name}" added and saved!`);
   }
@@ -1344,13 +1263,11 @@
     if (PROJECT_SUBPROJECTS[proj].includes(name)) { toast('Subproject already exists for this project.'); return; }
     PROJECT_SUBPROJECTS[proj].push(name);
     document.getElementById('new-subproject-name').value = '';
-    refreshAllDropdowns();
-    renderSubprojectsList();
+    refreshAllDropdowns(); renderSubprojectsList();
     saveSubprojectToSheet(proj, name);
     toast(`Subproject "${name}" added and saved!`);
   }
 
-  // Listen for project select change in settings to show its subprojects
   document.addEventListener('change', e => {
     if (e.target.id === 'settings-project-select') renderSubprojectsList();
   });
@@ -1360,7 +1277,6 @@
       const res = await fetch(buildUrl({ action: 'getSettings' }));
       const data = await res.json();
       if (data.settings && data.settings.length) {
-        // Clear existing dynamic projects (keep __none__)
         const none = PROJECT_SUBPROJECTS['__none__'];
         Object.keys(PROJECT_SUBPROJECTS).forEach(k => { if (k !== '__none__') delete PROJECT_SUBPROJECTS[k]; });
         PROJECT_SUBPROJECTS['__none__'] = none;
@@ -1372,25 +1288,22 @@
             if (!PROJECT_SUBPROJECTS[proj]) PROJECT_SUBPROJECTS[proj] = [];
             if (!PROJECT_SUBPROJECTS[proj].includes(row.value)) PROJECT_SUBPROJECTS[proj].push(row.value);
           } else if (row.type && row.type.startsWith('rate:')) {
-            const person = row.type.replace('rate:', '');
-            rates[person] = parseFloat(row.value);
+            rates[row.type.replace('rate:', '')] = parseFloat(row.value);
           }
         });
         refreshAllDropdowns();
       }
-    } catch(e) { /* use hardcoded defaults if settings unavailable */ }
+    } catch(e) {}
   }
 
   async function saveProjectToSheet(name) {
-    try {
-      await fetch(buildUrl({ action: 'saveSetting', type: 'project', value: name }));
-    } catch(e) { toast('Saved locally only — could not reach sheet.'); }
+    try { await fetch(buildUrl({ action: 'saveSetting', type: 'project', value: name })); }
+    catch(e) { toast('Saved locally only — could not reach sheet.'); }
   }
 
   async function saveSubprojectToSheet(proj, name) {
-    try {
-      await fetch(buildUrl({ action: 'saveSetting', type: `subproject:${proj}`, value: name }));
-    } catch(e) { toast('Saved locally only — could not reach sheet.'); }
+    try { await fetch(buildUrl({ action: 'saveSetting', type: `subproject:${proj}`, value: name })); }
+    catch(e) { toast('Saved locally only — could not reach sheet.'); }
   }
 
   function updateSubprojects() {
