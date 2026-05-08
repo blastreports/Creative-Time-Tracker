@@ -125,6 +125,7 @@
       .summary-card.blue .sc-label { color: #6aaae0; }
       .summary-card .sc-value { color: var(--text); }
     }
+    @media (max-width: 700px) {
       .grid-2, .grid-3 { grid-template-columns: 1fr; }
       .entry-row { grid-template-columns: 1fr 1fr 40px; }
       .entry-row .muted, .entry-row .small { display: none; }
@@ -382,7 +383,7 @@
           <option>Studio GFX</option><option>Vacation</option><option>Venue GFX</option><option>eChampionship</option>
         </select>
       </div>
-      <div class="entry-header" style="grid-template-columns:110px 120px 110px 1fr 100px 48px 82px 44px;">
+      <div class="entry-header">
         <div>Person</div>
         <div>Project</div>
         <div>Subproject</div>
@@ -799,7 +800,6 @@
     return url.toString();
   }
 
-  // ── FIXED: postEntry now uses POST with JSON body ────────────────────────────
   async function postEntry(entry) {
     if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
       entries.unshift(entry);
@@ -1095,7 +1095,7 @@
       (!subproject || e.subproject === subproject) &&
       (!dateFrom   || e.date >= dateFrom) &&
       (!dateTo     || e.date <= dateTo)
-    ).slice().sort((a,b) => a.date.localeCompare(b.date));
+    ).slice().sort((a,b) => b.date.localeCompare(a.date));
     const list = document.getElementById('entries-list');
     if (!data.length) { list.innerHTML = '<div class="empty">No entries found.</div>'; return; }
     list.innerHTML = `<div class="entry-header">
@@ -1107,10 +1107,10 @@
           <div class="avatar" style="background:${AVATAR_BG[idx]||'#D3D1C7'};color:${AVATAR_FG[idx]||'#444441'};">${initials(e.person)}</div>
           ${e.person}
         </div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.project||''}</div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.subproject||''}</div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.event||''}</div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.notes||''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${e.project||''}">${e.project||''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${e.subproject||''}">${e.subproject||''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${e.event||''}">${e.event||''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${e.notes||''}">${e.notes||''}</div>
         <div style="font-weight:500;">${(+e.hours).toLocaleString('en-GB',{minimumFractionDigits:1,maximumFractionDigits:1})}h</div>
         <div style="color:var(--text2);">${e.date}</div>
         <div class="entry-actions">
@@ -1158,17 +1158,10 @@
     document.getElementById('edit-id').value = e.id;
     document.getElementById('edit-person').value = e.person;
     document.getElementById('edit-date').value = e.date;
-
-    // Populate project dropdown
     populateEditDropdown('edit-project', getAllProjects(), e.project, false);
-
-    // Populate event dropdown (all subprojects)
     populateEditDropdown('edit-event', getAllSubprojects(), e.event, true);
-
-    // Populate subproject dropdown based on project
     const subs = PROJECT_SUBPROJECTS[e.project] || getAllSubprojects();
     populateEditDropdown('edit-subproject', subs, e.subproject || '', true);
-
     document.getElementById('edit-hours').value = e.hours;
     document.getElementById('edit-notes').value = e.notes || '';
     document.getElementById('edit-modal').style.display = 'flex';
@@ -1220,21 +1213,21 @@
       (!dateTo     || e.date <= dateTo) &&
       (!proj       || e.project === proj) &&
       (!subproject || e.subproject === subproject)
-    ).slice().sort((a,b) => a.date.localeCompare(b.date));
+    ).slice().sort((a,b) => b.date.localeCompare(a.date));
     panel.style.display = 'block';
     title.textContent = `Entries for ${person} (${data.length} shown)`;
     if (!data.length) { list.innerHTML = '<div class="empty">No entries found.</div>'; return; }
     list.innerHTML = data.map(e => {
       const idx = personIdx(e.person);
-      return `<div class="entry-row" style="grid-template-columns:110px 120px 110px 1fr 100px 48px 82px 44px;">
+      return `<div class="entry-row">
         <div class="person-cell">
           <div class="avatar" style="background:${AVATAR_BG[idx]||'#D3D1C7'};color:${AVATAR_FG[idx]||'#444441'};">${initials(e.person)}</div>
           ${e.person}
         </div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.project||''}</div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.subproject||''}</div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.event||''}</div>
-        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.notes||''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${e.project||''}">${e.project||''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${e.subproject||''}">${e.subproject||''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${e.event||''}">${e.event||''}</div>
+        <div style="color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${e.notes||''}">${e.notes||''}</div>
         <div style="font-weight:500;">${(+e.hours).toLocaleString('en-GB',{minimumFractionDigits:1,maximumFractionDigits:1})}h</div>
         <div style="color:var(--text2);">${e.date||''}</div>
         <div class="entry-actions">
