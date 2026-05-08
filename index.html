@@ -462,7 +462,7 @@
         </select>
         <input type="date" id="dash-filter-date-from" onchange="renderDash()" style="font-size:13px;padding:6px 10px;width:auto;flex:1;min-width:130px;" title="From date" />
         <input type="date" id="dash-filter-date-to" onchange="renderDash()" style="font-size:13px;padding:6px 10px;width:auto;flex:1;min-width:130px;" title="To date" />
-        <button class="btn" onclick="loadEntries().then(renderDash)" style="font-size:13px;padding:6px 14px;">Refresh</button>
+        <button class="btn" onclick="loadEntries(true).then(renderDash)" style="font-size:13px;padding:6px 14px;">Refresh</button>
       </div>
 
       <!-- Rate editor -->
@@ -626,7 +626,7 @@
         <option>Yana</option>
         <option>Helena</option>
       </select>
-      <button class="btn" onclick="loadEntries().then(renderEntries)" style="font-size:13px;padding:6px 14px;">Refresh</button>
+      <button class="btn" onclick="loadEntries(true).then(renderEntries)" style="font-size:13px;padding:6px 14px;">Refresh</button>
     </div>
     <div class="filter-bar" style="margin-top:-8px;">
       <select id="entries-filter-subproject" onchange="renderEntries()">
@@ -767,6 +767,8 @@
 
   let entries = [];
   let unlocked = false;
+  let lastFetchTime = 0;
+  const CACHE_TTL = 60000; // 60 seconds cache
 
   document.getElementById('date').value = new Date().toISOString().split('T')[0];
 
@@ -788,8 +790,14 @@
     document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active', ['log','dashboard','entries','settings'][i]===t));
     document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-'+t).classList.add('active');
-    if (t === 'entries') loadEntries().then(renderEntries);
-    if (t === 'dashboard' && unlocked) loadRates().then(() => loadEntries().then(renderDash));
+    if (t === 'entries') {
+      if (entries.length > 0) renderEntries(); // render instantly from cache
+      loadEntries().then(renderEntries);        // then refresh if cache is stale
+    }
+    if (t === 'dashboard' && unlocked) {
+      if (entries.length > 0) renderDash();    // render instantly from cache
+      loadRates().then(() => loadEntries().then(renderDash));
+    }
     if (t === 'settings') renderSettingsLists();
   }
 
@@ -828,12 +836,16 @@
     }
   }
 
-  async function loadEntries() {
+  async function loadEntries(force = false) {
     if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return;
+    const now = Date.now();
+    if (!force && entries.length > 0 && (now - lastFetchTime) < CACHE_TTL) return; // use cache
+    setSyncStatus('Loading…', true);
     try {
       const res = await fetch(buildUrl({ action: 'get' }));
       const data = await res.json();
       entries = data.entries || [];
+      lastFetchTime = Date.now();
       setSyncStatus('Synced', true);
     } catch(e) {
       setSyncStatus('Offline', false);
@@ -875,7 +887,8 @@
       unlocked = true;
       document.getElementById('lock-screen').style.display = 'none';
       document.getElementById('dash-content').style.display = 'block';
-      loadRates().then(() => loadEntries().then(renderDash));
+      if (entries.length > 0) { loadRates().then(renderDash); } // render instantly, rates load async
+      else { loadRates().then(() => loadEntries().then(renderDash)); }
     } else {
       document.getElementById('pass-error').style.display = 'block';
     }
@@ -1361,8 +1374,8 @@
     subSel.innerHTML = '<option value="">Select subproject...</option>' + subs.map(s => `<option>${s}</option>`).join('');
   }
 
-  // Init
-  loadEntries();
+  // Init — load everything upfront so tabs open instantly
+  loadEntries(true);
   loadSettings();
 </script>
 </body>
