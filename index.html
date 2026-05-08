@@ -795,8 +795,8 @@
       loadEntries().then(renderEntries);        // then refresh if cache is stale
     }
     if (t === 'dashboard' && unlocked) {
-      if (entries.length > 0) renderDash();    // render instantly from cache
-      loadRates().then(() => loadEntries().then(renderDash));
+      loadRates();
+      loadEntries(true).then(() => renderDash());
     }
     if (t === 'settings') renderSettingsLists();
   }
@@ -887,8 +887,8 @@
       unlocked = true;
       document.getElementById('lock-screen').style.display = 'none';
       document.getElementById('dash-content').style.display = 'block';
-      if (entries.length > 0) { loadRates().then(renderDash); } // render instantly, rates load async
-      else { loadRates().then(() => loadEntries().then(renderDash)); }
+      loadRates();
+      loadEntries(true).then(() => { renderDash(); });
     } else {
       document.getElementById('pass-error').style.display = 'block';
     }
@@ -968,6 +968,10 @@
   function renderDash() {
     populateDashFilters();
     const data = filteredDash();
+    if (!entries.length) {
+      document.getElementById('dash-metrics').innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0;">Loading data…</div>';
+      return;
+    }
     const DONUT_COLORS = ['#4A90D9','#E8A838','#E05C5C','#5BBF7A','#9B6DD4','#E87D3E','#45B8C0','#D4597A','#8BC34A','#F06292','#26A69A','#FF7043','#7986CB','#A1887F','#78909C','#66BB6A'];
     const totalHrs  = data.reduce((s,e) => s + (+e.hours), 0);
     const totalCost = data.reduce((s,e) => s + getCost(e.person, +e.hours), 0);
