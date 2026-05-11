@@ -466,7 +466,9 @@
         <input type="date" id="dash-filter-date-from" onchange="renderDash()" style="font-size:13px;padding:6px 10px;width:auto;flex:1;min-width:130px;" title="From date" />
         <input type="date" id="dash-filter-date-to" onchange="renderDash()" style="font-size:13px;padding:6px 10px;width:auto;flex:1;min-width:130px;" title="To date" />
         <button class="btn" onclick="loadEntries(true).then(renderDash)" style="font-size:13px;padding:6px 14px;">Refresh</button>
+        <button class="btn" onclick="testConnection()" style="font-size:13px;padding:6px 14px;color:var(--text3);" title="Diagnose connection issues">Diagnose</button>
       </div>
+      <div id="connection-error" style="display:none;background:#FCEBEB;border:1px solid #F5C0C0;border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;font-size:13px;color:#A32D2D;line-height:1.6;"></div>
 
       <!-- Rate editor -->
       <div class="card" style="margin-bottom:16px;">
@@ -847,13 +849,38 @@
     if (!force && entries.length > 0 && (now - lastFetchTime) < CACHE_TTL) return;
     setSyncStatus('Loading…', true);
     try {
-      const res = await fetch(buildUrl({ action: 'get' }));
-      const data = await res.json();
+      // Apps Script redirects to a script.googleusercontent.com URL.
+      // We must use mode:'no-cors' as a fallback if the normal fetch fails,
+      // but the correct approach is to ensure the script sets CORS headers.
+      // We add redirect:'follow' explicitly and a timeout to catch hangs.
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
+      const res = await fetch(buildUrl({ action: 'get' }), {
+        redirect: 'follow',
+        signal: controller.signal
+      });
+      clearTimeout(timeout);
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch(parseErr) {
+        console.error('Response was not JSON:', text.substring(0, 300));
+        throw new Error('Invalid JSON response from Apps Script');
+      }
       entries = data.entries || [];
       lastFetchTime = Date.now();
-      setSyncStatus('Synced', true);
+      setSyncStatus(`Synced (${entries.length} entries)`, true);
     } catch(e) {
-      setSyncStatus('Offline', false);
+      console.error('loadEntries failed:', e);
+      if (e.name === 'AbortError') {
+        setSyncStatus('Timed out — Apps Script too slow', false);
+      } else {
+        setSyncStatus(`Error: ${e.message}`, false);
+      }
     }
   }
 
@@ -1409,6 +1436,36 @@
   }
 
   // Init
+
+  // ── DIAGNOSTICS ──────────────────────────────────────────────────────────────
+  async function testConnection() {
+    const errEl = document.getElementById("connection-error");
+    errEl.style.display = "block";
+    errEl.style.background = "#FCEBEB";
+    errEl.style.borderColor = "#F5C0C0";
+    errEl.style.color = "#A32D2D";
+    errEl.innerHTML = "🔄 Testing connection to Google Sheets…";
+    const url = buildUrl({ action: "get" });
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+      const t0 = Date.now();
+      const res = await fetch(url, { redirect: "follow", signal: controller.signal });
+      clearTimeout(timeout);
+      const elapsed = Date.now() - t0;
+      const text = await res.text();
+      if (!res.ok) { errEl.innerHTML = "❌ HTTP " + res.status + " after " + elapsed + "ms. Response: " + text.substring(0,200); return; }
+      let data;
+      try { data = JSON.parse(text); } catch(e) { errEl.innerHTML = "❌ Connected (" + elapsed + "ms) but response is not valid JSON. Raw: " + text.substring(0,300); return; }
+      const count = (data.entries || []).length;
+      errEl.style.background = "#EAF3DE"; errEl.style.borderColor = "#C4E09A"; errEl.style.color = "#3B6D11";
+      errEl.innerHTML = "✅ Connected in " + elapsed + "ms. Found <strong>" + count + " entries</strong> in Google Sheets." + (count === 0 ? "<br>⚠️ Sheet returned 0 entries — check your sheet has data." : "");
+      if (count > 0) { entries = data.entries; lastFetchTime = Date.now(); setSyncStatus("Synced (" + count + " entries)", true); renderDash(); }
+    } catch(e) {
+      if (e.name === "AbortError") { errEl.innerHTML = "❌ Timed out after 15s. Apps Script is not responding. Check: script.google.com → your script → Deploy → Manage deployments → ensure access is set to Anyone."; }
+      else { errEl.innerHTML = "❌ Fetch failed: " + e.message + ". The Apps Script may not be deployed correctly or CORS is blocked."; }
+    }
+  }
   loadEntries(true);
   loadSettings();
 </script>
