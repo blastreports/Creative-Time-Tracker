@@ -952,8 +952,7 @@
 
   async function loadRates() {
     try {
-      const res = await fetch(buildUrl({ action: 'getRates' }));
-      const data = await res.json();
+      const data = await jsonp(buildUrl({ action: 'getRates' }));
       rates = data.rates || {};
       ratesLoaded = true;
     } catch(e) { ratesLoaded = true; }
@@ -1394,8 +1393,7 @@
 
   async function loadSettings() {
     try {
-      const res = await fetch(buildUrl({ action: 'getSettings' }));
-      const data = await res.json();
+      const data = await jsonp(buildUrl({ action: 'getSettings' }));
       if (data.settings && data.settings.length) {
         const none = PROJECT_SUBPROJECTS['__none__'];
         Object.keys(PROJECT_SUBPROJECTS).forEach(k => { if (k !== '__none__') delete PROJECT_SUBPROJECTS[k]; });
