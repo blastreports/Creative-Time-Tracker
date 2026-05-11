@@ -843,44 +843,42 @@
     }
   }
 
+  // JSONP bypasses CORS by injecting a <script> tag — works from any origin
+  function jsonp(url) {
+    return new Promise((resolve, reject) => {
+      const cbName = '__jsonp_' + Date.now();
+      let script;
+      const timeout = setTimeout(() => {
+        delete window[cbName];
+        if (script) script.remove();
+        reject(new Error('Timeout after 15s'));
+      }, 15000);
+      window[cbName] = (data) => {
+        clearTimeout(timeout);
+        delete window[cbName];
+        if (script) script.remove();
+        resolve(data);
+      };
+      script = document.createElement('script');
+      script.src = url + '&callback=' + cbName;
+      script.onerror = () => { clearTimeout(timeout); reject(new Error('Script load failed — check Apps Script URL')); };
+      document.head.appendChild(script);
+    });
+  }
+
   async function loadEntries(force = false) {
     if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return;
     const now = Date.now();
     if (!force && entries.length > 0 && (now - lastFetchTime) < CACHE_TTL) return;
     setSyncStatus('Loading…', true);
     try {
-      // Apps Script redirects to a script.googleusercontent.com URL.
-      // We must use mode:'no-cors' as a fallback if the normal fetch fails,
-      // but the correct approach is to ensure the script sets CORS headers.
-      // We add redirect:'follow' explicitly and a timeout to catch hangs.
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
-      const res = await fetch(buildUrl({ action: 'get' }), {
-        redirect: 'follow',
-        signal: controller.signal
-      });
-      clearTimeout(timeout);
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-      const text = await res.text();
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch(parseErr) {
-        console.error('Response was not JSON:', text.substring(0, 300));
-        throw new Error('Invalid JSON response from Apps Script');
-      }
+      const data = await jsonp(buildUrl({ action: 'get' }));
       entries = data.entries || [];
       lastFetchTime = Date.now();
-      setSyncStatus(`Synced (${entries.length} entries)`, true);
+      setSyncStatus('Synced (' + entries.length + ' entries)', true);
     } catch(e) {
       console.error('loadEntries failed:', e);
-      if (e.name === 'AbortError') {
-        setSyncStatus('Timed out — Apps Script too slow', false);
-      } else {
-        setSyncStatus(`Error: ${e.message}`, false);
-      }
+      setSyncStatus('Error: ' + e.message, false);
     }
   }
 
