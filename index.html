@@ -118,6 +118,9 @@
     .dash-table tr:last-child td { border-bottom: none; }
     .dash-table tr:hover td { background: var(--bg2); }
     .person-chip { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background: var(--bg3); color: var(--text); }
+    .dash-loading { display: flex; align-items: center; gap: 10px; color: var(--text3); font-size: 13px; padding: 20px 0; }
+    .dash-loading::before { content: ''; width: 16px; height: 16px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     @media (prefers-color-scheme: dark) {
       .summary-card.green { background: #1a3a0a; border-color: #2d5c10; }
       .summary-card.green .sc-label { color: #8fc95a; }
@@ -471,7 +474,8 @@
         <div id="rate-editor"></div>
       </div>
 
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;" id="dash-metrics"></div>
+      <!-- FIX: removed 4-column grid from this div — summary-cards renders a 2-col grid inside -->
+      <div id="dash-metrics" style="margin-bottom:20px;"></div>
 
       <!-- Donut charts -->
       <div class="donut-section">
@@ -768,7 +772,7 @@
   let entries = [];
   let unlocked = false;
   let lastFetchTime = 0;
-  const CACHE_TTL = 60000; // 60 seconds cache
+  const CACHE_TTL = 60000;
 
   document.getElementById('date').value = new Date().toISOString().split('T')[0];
 
@@ -791,11 +795,12 @@
     document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-'+t).classList.add('active');
     if (t === 'entries') {
-      if (entries.length > 0) renderEntries(); // render instantly from cache
-      loadEntries().then(renderEntries);        // then refresh if cache is stale
+      if (entries.length > 0) renderEntries();
+      loadEntries().then(renderEntries);
     }
     if (t === 'dashboard' && unlocked) {
       loadRates();
+      showDashLoading();
       loadEntries(true).then(() => renderDash());
     }
     if (t === 'settings') renderSettingsLists();
@@ -839,7 +844,7 @@
   async function loadEntries(force = false) {
     if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return;
     const now = Date.now();
-    if (!force && entries.length > 0 && (now - lastFetchTime) < CACHE_TTL) return; // use cache
+    if (!force && entries.length > 0 && (now - lastFetchTime) < CACHE_TTL) return;
     setSyncStatus('Loading…', true);
     try {
       const res = await fetch(buildUrl({ action: 'get' }));
@@ -888,7 +893,8 @@
       document.getElementById('lock-screen').style.display = 'none';
       document.getElementById('dash-content').style.display = 'block';
       loadRates();
-      loadEntries(true).then(() => { renderDash(); });
+      showDashLoading();
+      loadEntries(true).then(() => renderDash());
     } else {
       document.getElementById('pass-error').style.display = 'block';
     }
@@ -898,6 +904,26 @@
   const DEFAULT_RATE = 25;
   let rates = {};
   let ratesLoaded = false;
+
+  // FIX: show a spinner while data loads instead of a blank/broken layout
+  function showDashLoading() {
+    const m = document.getElementById('dash-metrics');
+    if (m) m.innerHTML = '<div class="dash-loading">Loading data from Google Sheets…</div>';
+    ['dash-by-person','dash-by-project','dash-by-subproject'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = '<div class="dash-loading">Loading…</div>';
+    });
+    const dt = document.getElementById('dash-detail-table');
+    if (dt) dt.innerHTML = '';
+    // Clear donuts
+    ['donut-projects','donut-subprojects','donut-projects-cost','donut-subprojects-cost'].forEach(id => {
+      const c = document.getElementById(id);
+      if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
+    });
+    ['legend-projects','legend-subprojects','legend-projects-cost','legend-subprojects-cost'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.innerHTML = '';
+    });
+  }
 
   async function loadRates() {
     try {
@@ -966,16 +992,19 @@
   }
 
   function renderDash() {
-    populateDashFilters();
-    const data = filteredDash();
+    // FIX: if entries is still empty, show loading state and bail
     if (!entries.length) {
-      document.getElementById('dash-metrics').innerHTML = '<div style="color:var(--text3);font-size:13px;padding:8px 0;">Loading data…</div>';
+      showDashLoading();
       return;
     }
+    populateDashFilters();
+    const data = filteredDash();
+
     const DONUT_COLORS = ['#4A90D9','#E8A838','#E05C5C','#5BBF7A','#9B6DD4','#E87D3E','#45B8C0','#D4597A','#8BC34A','#F06292','#26A69A','#FF7043','#7986CB','#A1887F','#78909C','#66BB6A'];
     const totalHrs  = data.reduce((s,e) => s + (+e.hours), 0);
     const totalCost = data.reduce((s,e) => s + getCost(e.person, +e.hours), 0);
 
+    // FIX: summary-cards renders as its own 2-col grid — no longer inside a 4-col grid
     document.getElementById('dash-metrics').innerHTML = `
       <div class="summary-cards">
         <div class="summary-card green">
@@ -1029,6 +1058,7 @@
         angle += slice;
         result.push({ label, color, pct: Math.round(vals[valueKey]/total*100), val: vals[valueKey] });
       });
+      // FIX: use CSS variable for donut hole so it works in dark mode
       ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
       ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#ffffff';
       ctx.fill();
@@ -1378,7 +1408,7 @@
     subSel.innerHTML = '<option value="">Select subproject...</option>' + subs.map(s => `<option>${s}</option>`).join('');
   }
 
-  // Init — load everything upfront so tabs open instantly
+  // Init
   loadEntries(true);
   loadSettings();
 </script>
