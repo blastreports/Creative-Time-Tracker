@@ -621,8 +621,9 @@
     if (t === 'dashboard' && unlocked) {
       loadRates();
       showDashLoading();
-      // FIX: loadEntries now returns a proper Promise that resolves AFTER JSONP completes
-      loadEntries(true).then(() => renderDash());
+      loadEntries(true).then(() => {
+        if (entries.length) renderDash();
+      });
     }
     if (t === 'settings') renderSettingsLists();
   }
@@ -742,9 +743,13 @@
       document.getElementById('lock-screen').style.display = 'none';
       document.getElementById('dash-content').style.display = 'block';
       loadRates();
-      showDashLoading();
-      // FIX: .then() now fires after JSONP completes, not before
-      loadEntries(true).then(() => renderDash());
+      // If data already loaded (from startup fetch), render immediately
+      if (entries.length) {
+        renderDash();
+      } else {
+        showDashLoading();
+        loadEntries(true).then(() => renderDash());
+      }
     } else {
       document.getElementById('pass-error').style.display = 'block';
     }
