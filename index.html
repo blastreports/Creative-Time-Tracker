@@ -391,6 +391,7 @@
         <input type="date" id="dash-filter-date-to" onchange="renderDash()" style="font-size:13px;padding:6px 10px;width:auto;flex:1;min-width:130px;" title="To date" />
         <button class="btn" onclick="loadEntries(true).then(renderDash)" style="font-size:13px;padding:6px 14px;">Refresh</button>
         <button class="btn" onclick="testConnection()" style="font-size:13px;padding:6px 14px;color:var(--text3);" title="Diagnose connection issues">Diagnose</button>
+        <button class="btn" onclick="debugEntries()" style="font-size:13px;padding:6px 14px;color:var(--text3);">Debug</button>
       </div>
       <div id="connection-error" style="display:none;border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;font-size:13px;line-height:1.6;"></div>
 
@@ -1277,6 +1278,28 @@
       errEl.style.color = '#A32D2D';
       errEl.innerHTML = `❌ Failed: ${e.message}<br>Check your Apps Script is deployed with access set to <strong>Anyone</strong> (not just anyone with a Google account).`;
     }
+  }
+
+  // ── DEBUG ────────────────────────────────────────────────────────────────────
+  function debugEntries() {
+    const errEl = document.getElementById('connection-error');
+    errEl.style.display = 'block';
+    errEl.style.background = '#f5f4f0';
+    errEl.style.border = '1px solid #ccc';
+    errEl.style.color = '#1a1a18';
+    if (!entries.length) {
+      errEl.innerHTML = 'entries array is empty (length 0)';
+      return;
+    }
+    const sample = entries[0];
+    const filtered = filteredDash();
+    const totalHrs = filtered.reduce((s,e) => s + (+e.hours), 0);
+    errEl.innerHTML =
+      '<strong>entries.length:</strong> ' + entries.length + '<br>' +
+      '<strong>filteredDash().length:</strong> ' + filtered.length + '<br>' +
+      '<strong>totalHrs:</strong> ' + totalHrs + '<br>' +
+      '<strong>First entry keys:</strong> ' + Object.keys(sample).join(', ') + '<br>' +
+      '<strong>First entry:</strong><br><pre style="font-size:11px;margin-top:4px;white-space:pre-wrap;max-height:200px;overflow:auto;">' + JSON.stringify(sample, null, 2) + '</pre>';
   }
 
   // ── INIT ─────────────────────────────────────────────────────────────────────
