@@ -964,7 +964,12 @@
           const cost = getCost(e.person, +e.hours);
           return `<tr>
             <td>${e.date}</td>
-            <td><span class="person-chip">${e.person}</span></td>
+            <td>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <div class="avatar" style="background:${AVATAR_BG[personIdx(e.person)]||'#D3D1C7'};color:${AVATAR_FG[personIdx(e.person)]||'#444441'};width:22px;height:22px;font-size:9px;">${initials(e.person)}</div>
+                <span style="font-size:13px;">${e.person}</span>
+              </div>
+            </td>
             <td>${e.project}</td>
             <td style="color:var(--text2);">${e.subproject||''}</td>
             <td style="color:var(--text2);">${e.notes||''}</td>
