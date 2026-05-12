@@ -137,6 +137,19 @@
 </head>
 <body>
 
+<!-- SITE LOCK -->
+<div id="site-lock" style="position:fixed;inset:0;background:var(--bg2);display:flex;align-items:center;justify-content:center;z-index:9999;">
+  <div style="background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:40px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.1);">
+    <h1 style="font-size:18px;font-weight:600;margin-bottom:6px;">Time Tracker</h1>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:24px;">Creative Team</p>
+    <input type="password" id="site-password" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkSitePass()"
+      style="width:100%;padding:10px 12px;font-size:14px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);color:var(--text);font-family:inherit;margin-bottom:10px;" />
+    <button onclick="checkSitePass()"
+      style="width:100%;padding:10px;background:var(--text);color:var(--bg);border:none;border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;">Enter</button>
+    <p id="site-pass-error" style="color:#E24B4A;font-size:13px;margin-top:10px;display:none;">Incorrect password.</p>
+  </div>
+</div>
+
 <header>
   <h1>Time Tracker</h1>
   <span>Creative Team</span>
@@ -578,6 +591,19 @@
 
 <script>
   // ── CONFIG ──────────────────────────────────────────────────────────────────
+  const SITE_PASSWORD = 'creative123';
+
+  function checkSitePass() {
+    const pw = document.getElementById('site-password').value;
+    if (pw === SITE_PASSWORD) {
+      document.getElementById('site-lock').style.display = 'none';
+      loadEntries(true).then(() => refreshAllDropdowns());
+      loadSettings();
+    } else {
+      document.getElementById('site-pass-error').style.display = 'block';
+    }
+  }
+
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwHqByWspFx4T36b0O2NUZBqoD9TiwrgTTgA5qdMAg8vt1k_1yxxp5UD2GRE0HwtFkV/exec';
   const DASHBOARD_PASSWORD = 'manager2024';
   // ────────────────────────────────────────────────────────────────────────────
@@ -1313,11 +1339,7 @@
   }
 
   // ── INIT ─────────────────────────────────────────────────────────────────────
-  // Load entries on startup so data is ready when user navigates to any tab
-  loadEntries(true).then(() => {
-    refreshAllDropdowns();
-  });
-  loadSettings();
+  // Data loads after site password is entered — see checkSitePass()
 </script>
 </body>
 </html>
