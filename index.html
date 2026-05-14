@@ -817,7 +817,7 @@
     const projSel  = document.getElementById('dash-filter-event');
     if (!projSel) return;
     const curProj = projSel.value;
-    projSel.innerHTML = '<option value="">All eveects</option>' + projects.map(p => `<option${p===curProj?' selected':''}>${p}</option>`).join('');
+    projSel.innerHTML = '<option value="">All events</option>' + projects.map(p => `<option${p===curProj?' selected':''}>${p}</option>`).join('');
   }
 
   function filteredDash() {
