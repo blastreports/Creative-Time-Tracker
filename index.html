@@ -826,7 +826,7 @@
     const dateFrom = document.getElementById('dash-filter-date-from')?.value || '';
     const dateTo   = document.getElementById('dash-filter-date-to')?.value || '';
     return entries.filter(e =>
-      (!proj     || e.project === proj || e.event === proj) &&
+      (!proj     || (e.project || e.event) === proj) &&
       (!person   || e.person === person) &&
       (!dateFrom || e.date >= dateFrom) &&
       (!dateTo   || e.date <= dateTo)
