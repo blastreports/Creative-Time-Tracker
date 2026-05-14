@@ -834,6 +834,11 @@
       (!dateFrom || e.date >= dateFrom) &&
       (!dateTo   || e.date <= dateTo)
     );
+    console.log('proj:', JSON.stringify(proj), '| person:', JSON.stringify(person), '| result:', result.length, '| total:', entries.length);
+    if (person && result.length === 0) {
+      const names = [...new Set(entries.map(e => e.person))];
+      console.log('All person values in sheet:', names);
+    }
     return result;
   }
 
