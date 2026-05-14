@@ -599,7 +599,7 @@
     if (pw === SITE_PASSWORD) {
       document.getElementById('site-lock').style.display = 'none';
       loadEntries(true).then(() => refreshAllDropdowns());
-      loadSettings();
+      loadSettings().then(() => refreshAllDropdowns());
     } else {
       document.getElementById('site-pass-error').style.display = 'block';
     }
@@ -1288,9 +1288,14 @@
             rates[row.type.replace('rate:', '')] = parseFloat(row.value);
           }
         });
-        refreshAllDropdowns();
       }
-    } catch(e) { console.warn('loadSettings failed:', e); }
+      // Always refresh dropdowns after settings load (whether from sheet or fallback)
+      refreshAllDropdowns();
+    } catch(e) {
+      console.warn('loadSettings failed:', e);
+      // Still refresh with built-in defaults if sheet unreachable
+      refreshAllDropdowns();
+    }
   }
 
   async function saveProjectToSheet(name) {
