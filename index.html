@@ -598,7 +598,7 @@
     const pw = document.getElementById('site-password').value;
     if (pw === SITE_PASSWORD) {
       document.getElementById('site-lock').style.display = 'none';
-      loadEntries(true).then(() => refreshAllDropdowns());
+      loadEntries(true);
       loadSettings().then(() => refreshAllDropdowns());
     } else {
       document.getElementById('site-pass-error').style.display = 'block';
