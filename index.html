@@ -305,41 +305,9 @@
       </div>
       <div class="grid-2">
         <div class="form-row">
-          <label>Event</label>
-          <select id="event">
-            <option value="">Select event...</option>
-            <option>Administrative Tasks</option>
-            <option>Broadcast GFX</option>
-            <option>Commercial</option>
-            <option>Content GFX</option>
-            <option>Creative Exploration / Creative Education</option>
-            <option>FC Pro</option>
-            <option>Host City tasks</option>
-            <option>IT Infrastructure</option>
-            <option>Identity Production</option>
-            <option>In-Lieu</option>
-            <option>Internal Decks</option>
-            <option>Marketing</option>
-            <option>Maternity/Paternity</option>
-            <option>Meetings</option>
-            <option>Nothing to do</option>
-            <option>Print</option>
-            <option>Project Management / Planning</option>
-            <option>RFP</option>
-            <option>Sick</option>
-            <option>SoMe GFX / Social</option>
-            <option>Studio GFX</option>
-            <option>Vacation</option>
-            <option>Venue GFX</option>
-            <option>eChampionship</option>
-          </select>
-        </div>
-        <div class="form-row">
           <label>Hours</label>
           <input type="number" id="hours" min="0.5" max="24" step="0.5" placeholder="e.g. 2.5" />
         </div>
-      </div>
-      <div class="grid-2">
         <div class="form-row">
           <label>Notes (optional)</label>
           <input type="text" id="notes" placeholder="What did you work on?" />
@@ -846,12 +814,12 @@
   }
 
   function populateDashFilters() {
-    // Static list matching the log time event dropdown exactly
-    const EVENT_LIST = ['Internal','Commercial','pitch','BLAST TV 2026','Dota General 2026','SLAM 6 (VI) 2026 - Malta','SLAM 7 (VII) 2026 - Copenhagen','SLAM 8 (VIII) 2026','SLAM 9 (IX) 2026','FNCS: Competition Operations 2026','FNCS: Last Chance Qualifiers 2026','FNCS Legends Landing 2026','FNCS: Major 1 2026','FNCS: Major 1 Summit 2026','FNCS: Major 2 2026','FNCS: Major 3 2026','FNCS: Non-event specific 2026','FNCS: Pro-Am 2026','Fortnite Mobile Series 2026','Fortnite Reload Elite Series','Premier General','Premier: Bounty (S1) 2026 - Malta','Premier: Open (S1) 2026 - Rotterdam','Premier: Rivals (S1) 2026 - Fort Worth','Premier: Bounty (S2) 2026 - Malta','Premier: Open (S2) 2026','Premier: Rivals (S2) 2026','R6: Six Invitational 2026','R6: APL Challenger Series 2026','R6: APL Kickoff 2026','R6: APL Regional Finals 2026','R6: EML Challenger Series 2026','R6: EML Kickoff 2026','R6: EML Regional Finals 2026','R6: Last Chance Qualifier 2026','R6: Major 1 2026 - Salt Lake City','R6: Major 2 2026 - Osaka','R6: NAL Challenger Series 2026','R6: NAL Kickoff 2026','R6: NAL Regional Finals 2026','R6: Non-Event Related 2026/2027','R6: SAL Challenger Series 2026','R6: SAL Kickoff 2026','R6: SAL Regional Finals 2026','R6: Six Invitational 2027','R6: Split 1 APL 2026','R6: Split 1 EML 2026','R6: Split 1 NAL 2026','R6: Split 1 SAL 2026','R6: Split 2 APL 2026','R6: Split 2 EML 2026','R6: Split 2 NAL 2026','R6: Split 2 SAL 2026','RLCS: CRL 2026','RLCS: Last Chance Qualifier 2026','RLCS: Major 1 2026','RLCS: Major 2 2026','RLCS: Non-event specific 2026','RLCS: Online Qualifier (1v1 + 2v2) - EU/NA 2026','RLCS: Online Qualifier (1v1 + 2v2) - Rest of World 2026','RLCS: Online Qualifiers (Major 1) 2026 - EU/NA','RLCS: Online Qualifiers (Major 1) 2026 - Rest of World','RLCS: Online Qualifiers (Major 2) 2026 - EU/NA','RLCS: Online Qualifiers (Major 2) 2026 - Rest of World','RLCS: Worlds Championship 2026','Brawl Stars Spring Split 2026','Brawl Stars Brawl Cup 2026','Brawl Stars Summer Split 2026','Brawl Stars LCQ 2026','Brawl Stars World Finals 2026','Brawl Stars General 2026','Wimbledon 2026'];
-    const projSel = document.getElementById('dash-filter-event');
+    // Pull actual values from data so filter always matches exactly
+    const projects = [...new Set(entries.map(e => e.project || e.event).filter(Boolean))].sort();
+    const projSel  = document.getElementById('dash-filter-event');
     if (!projSel) return;
     const curProj = projSel.value;
-    projSel.innerHTML = '<option value="">All events</option>' + EVENT_LIST.map(p => `<option${p===curProj?' selected':''}>${p}</option>`).join('');
+    projSel.innerHTML = '<option value="">All events</option>' + projects.map(p => `<option${p===curProj?' selected':''}>${p}</option>`).join('');
   }
 
   function filteredDash() {
