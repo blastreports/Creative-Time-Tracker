@@ -828,12 +828,30 @@
     const person   = document.getElementById('dash-filter-person')?.value || '';
     const dateFrom = document.getElementById('dash-filter-date-from')?.value || '';
     const dateTo   = document.getElementById('dash-filter-date-to')?.value || '';
-    return entries.filter(e =>
+    const result = entries.filter(e =>
       (!proj     || e.project === proj || e.event === proj) &&
       (!person   || e.person === person) &&
       (!dateFrom || e.date >= dateFrom) &&
       (!dateTo   || e.date <= dateTo)
     );
+    if (proj) {
+      const sample = entries[0];
+      console.log('=== filteredDash ===');
+      console.log('proj:', JSON.stringify(proj));
+      console.log('result.length:', result.length);
+      console.log('first entry keys:', Object.keys(sample));
+      console.log('first entry:', JSON.stringify(sample));
+      const matching = entries.filter(e => e.project === proj || e.event === proj);
+      console.log('direct match count:', matching.length);
+      if (matching.length === 0 && entries.length > 0) {
+        console.log('NO MATCH - checking all unique project values:');
+        const uniq = [...new Set(entries.map(e => e.project))].slice(0,10);
+        console.log('unique e.project:', uniq);
+        const uniqE = [...new Set(entries.map(e => e.event))].slice(0,10);
+        console.log('unique e.event:', uniqE);
+      }
+    }
+    return result;
   }
 
   function renderDash() {
