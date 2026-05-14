@@ -758,7 +758,7 @@
   function showDashLoading() {
     const m = document.getElementById('dash-metrics');
     if (m) m.innerHTML = '<div class="dash-loading">Loading data from Google Sheets…</div>';
-    ['dash-by-person','dash-by-project','dash-by-subproject'].forEach(id => {
+    ['dash-by-person','dash-by-event','dash-by-subproject'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.innerHTML = '<div class="dash-loading">Loading…</div>';
     });
@@ -834,23 +834,6 @@
       (!dateFrom || e.date >= dateFrom) &&
       (!dateTo   || e.date <= dateTo)
     );
-    if (proj) {
-      const sample = entries[0];
-      console.log('=== filteredDash ===');
-      console.log('proj:', JSON.stringify(proj));
-      console.log('result.length:', result.length);
-      console.log('first entry keys:', Object.keys(sample));
-      console.log('first entry:', JSON.stringify(sample));
-      const matching = entries.filter(e => e.project === proj || e.event === proj);
-      console.log('direct match count:', matching.length);
-      if (matching.length === 0 && entries.length > 0) {
-        console.log('NO MATCH - checking all unique project values:');
-        const uniq = [...new Set(entries.map(e => e.project))].slice(0,10);
-        console.log('unique e.project:', uniq);
-        const uniqE = [...new Set(entries.map(e => e.event))].slice(0,10);
-        console.log('unique e.event:', uniqE);
-      }
-    }
     return result;
   }
 
@@ -878,7 +861,7 @@
       </div>`;
 
     if (!data.length) {
-      ['dash-by-person','dash-by-project','dash-by-subproject'].forEach(id => {
+      ['dash-by-person','dash-by-event','dash-by-subproject'].forEach(id => {
         document.getElementById(id).innerHTML = '<div class="empty">No entries found.</div>';
       });
       document.getElementById('dash-detail-table').innerHTML = '';
