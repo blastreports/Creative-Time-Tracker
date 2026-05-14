@@ -198,78 +198,6 @@
           <label>Event</label>
           <select id="event">
             <option value="">Select event...</option>
-            <option>Internal</option>
-            <option>Commercial</option>
-            <option>pitch</option>
-            <option>BLAST TV 2026</option>
-            <option>Dota General 2026</option>
-            <option>SLAM 6 (VI) 2026 - Malta</option>
-            <option>SLAM 7 (VII) 2026 - Copenhagen</option>
-            <option>SLAM 8 (VIII) 2026</option>
-            <option>SLAM 9 (IX) 2026</option>
-            <option>FNCS: Competition Operations 2026</option>
-            <option>FNCS: Last Chance Qualifiers 2026</option>
-            <option>FNCS Legends Landing 2026</option>
-            <option>FNCS: Major 1 2026</option>
-            <option>FNCS: Major 1 Summit 2026</option>
-            <option>FNCS: Major 2 2026</option>
-            <option>FNCS: Major 3 2026</option>
-            <option>FNCS: Non-event specific 2026</option>
-            <option>FNCS: Pro-Am 2026</option>
-            <option>Fortnite Mobile Series 2026</option>
-            <option>Fortnite Reload Elite Series</option>
-            <option>Premier General</option>
-            <option>Premier: Bounty (S1) 2026 - Malta</option>
-            <option>Premier: Open (S1) 2026 - Rotterdam</option>
-            <option>Premier: Rivals (S1) 2026 - Fort Worth</option>
-            <option>Premier: Bounty (S2) 2026 - Malta</option>
-            <option>Premier: Open (S2) 2026</option>
-            <option>Premier: Rivals (S2) 2026</option>
-            <option>R6: Six Invitational 2026</option>
-            <option>R6: APL Challenger Series 2026</option>
-            <option>R6: APL Kickoff 2026</option>
-            <option>R6: APL Regional Finals 2026</option>
-            <option>R6: EML Challenger Series 2026</option>
-            <option>R6: EML Kickoff 2026</option>
-            <option>R6: EML Regional Finals 2026</option>
-            <option>R6: Last Chance Qualifier 2026</option>
-            <option>R6: Major 1 2026 - Salt Lake City</option>
-            <option>R6: Major 2 2026 - Osaka</option>
-            <option>R6: NAL Challenger Series 2026</option>
-            <option>R6: NAL Kickoff 2026</option>
-            <option>R6: NAL Regional Finals 2026</option>
-            <option>R6: Non-Event Related 2026/2027</option>
-            <option>R6: SAL Challenger Series 2026</option>
-            <option>R6: SAL Kickoff 2026</option>
-            <option>R6: SAL Regional Finals 2026</option>
-            <option>R6: Six Invitational 2027</option>
-            <option>R6: Split 1 APL 2026</option>
-            <option>R6: Split 1 EML 2026</option>
-            <option>R6: Split 1 NAL 2026</option>
-            <option>R6: Split 1 SAL 2026</option>
-            <option>R6: Split 2 APL 2026</option>
-            <option>R6: Split 2 EML 2026</option>
-            <option>R6: Split 2 NAL 2026</option>
-            <option>R6: Split 2 SAL 2026</option>
-            <option>RLCS: CRL 2026</option>
-            <option>RLCS: Last Chance Qualifier 2026</option>
-            <option>RLCS: Major 1 2026</option>
-            <option>RLCS: Major 2 2026</option>
-            <option>RLCS: Non-event specific 2026</option>
-            <option>RLCS: Online Qualifier (1v1 + 2v2) - EU/NA 2026</option>
-            <option>RLCS: Online Qualifier (1v1 + 2v2) - Rest of World 2026</option>
-            <option>RLCS: Online Qualifiers (Major 1) 2026 - EU/NA</option>
-            <option>RLCS: Online Qualifiers (Major 1) 2026 - Rest of World</option>
-            <option>RLCS: Online Qualifiers (Major 2) 2026 - EU/NA</option>
-            <option>RLCS: Online Qualifiers (Major 2) 2026 - Rest of World</option>
-            <option>RLCS: Worlds Championship 2026</option>
-            <option>Brawl Stars Spring Split 2026</option>
-            <option>Brawl Stars Brawl Cup 2026</option>
-            <option>Brawl Stars Summer Split 2026</option>
-            <option>Brawl Stars LCQ 2026</option>
-            <option>Brawl Stars World Finals 2026</option>
-            <option>Brawl Stars General 2026</option>
-            <option>Wimbledon 2026</option>
           </select>
         </div>
         <div class="form-row">
@@ -566,7 +494,7 @@
     const pw = document.getElementById('site-password').value;
     if (pw === SITE_PASSWORD) {
       document.getElementById('site-lock').style.display = 'none';
-      loadEntries(true);
+      loadEntries(true).then(() => populateLogEventDropdown());
       loadSettings().then(() => refreshAllDropdowns());
     } else {
       document.getElementById('site-pass-error').style.display = 'block';
@@ -1089,6 +1017,16 @@
     btn.textContent = 'Save changes'; btn.disabled = false;
   }
 
+  // ── Populate log-time event dropdown from live data ─────────────────────────
+  function populateLogEventDropdown() {
+    const sel = document.getElementById('event');
+    if (!sel) return;
+    const cur = sel.value;
+    const events = [...new Set(entries.map(e => e.project || e.event).filter(Boolean))].sort();
+    sel.innerHTML = '<option value="">Select event...</option>' +
+      events.map(ev => `<option${ev === cur ? ' selected' : ''}>${ev}</option>`).join('');
+  }
+
   // ── FIX: async wrapper that ensures entries are loaded before rendering ───────
   async function onPersonChange() {
     const person = document.getElementById('person').value;
@@ -1112,6 +1050,7 @@
     }
 
     // Now render with actual data
+    populateLogEventDropdown();
     renderPersonEntries();
   }
   // ─────────────────────────────────────────────────────────────────────────────
