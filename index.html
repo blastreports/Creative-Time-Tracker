@@ -617,7 +617,7 @@
       loadRates();
       showDashLoading();
       loadEntries(true).then(() => {
-        if (entries.length) renderDash();
+        if (entries.length) { populateDashFilters(); renderDash(); }
       });
     }
     if (t === 'settings') renderSettingsLists();
@@ -739,10 +739,11 @@
       document.getElementById('dash-content').style.display = 'block';
       loadRates();
       if (entries.length) {
+        populateDashFilters();
         renderDash();
       } else {
         showDashLoading();
-        loadEntries(true).then(() => renderDash());
+        loadEntries(true).then(() => { populateDashFilters(); renderDash(); });
       }
     } else {
       document.getElementById('pass-error').style.display = 'block';
@@ -840,19 +841,7 @@
       showDashLoading();
       return;
     }
-    populateDashFilters();
     const data = filteredDash();
-
-    // DEBUG
-    const proj = document.getElementById('dash-filter-event')?.value || '';
-    if (proj) {
-      console.log('Filter value:', JSON.stringify(proj));
-      console.log('Total entries:', entries.length);
-      console.log('Filtered entries:', data.length);
-      console.log('Sample e.project:', entries.slice(0,3).map(e => JSON.stringify(e.project)));
-      console.log('Sample e.event:', entries.slice(0,3).map(e => JSON.stringify(e.event)));
-      console.log('Match test:', entries.slice(0,3).map(e => (e.project||e.event) === proj));
-    }
 
     const DONUT_COLORS = ['#4A90D9','#E8A838','#E05C5C','#5BBF7A','#9B6DD4','#E87D3E','#45B8C0','#D4597A','#8BC34A','#F06292','#26A69A','#FF7043','#7986CB','#A1887F','#78909C','#66BB6A'];
     const totalHrs  = data.reduce((s,e) => s + (+e.hours), 0);
