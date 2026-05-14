@@ -813,7 +813,7 @@
   }
 
   function populateDashFilters() {
-    const projects = [...new Set(entries.map(e => e.event).filter(Boolean))].sort();
+    const projects = [...new Set(entries.map(e => e.project || e.event).filter(Boolean))].sort();
     const projSel  = document.getElementById('dash-filter-event');
     if (!projSel) return;
     const curProj = projSel.value;
@@ -826,7 +826,7 @@
     const dateFrom = document.getElementById('dash-filter-date-from')?.value || '';
     const dateTo   = document.getElementById('dash-filter-date-to')?.value || '';
     return entries.filter(e =>
-      (!proj     || e.event === proj) &&
+      (!proj     || e.project === proj || e.event === proj) &&
       (!person   || e.person === person) &&
       (!dateFrom || e.date >= dateFrom) &&
       (!dateTo   || e.date <= dateTo)
@@ -868,8 +868,9 @@
     const byProject = {}, bySubproject = {}, byPerson = {};
     data.forEach(e => {
       const hrs = +e.hours, cost = getCost(e.person, hrs) || 0;
-      if (!byProject[e.event]) byProject[e.event] = { hours: 0, cost: 0 };
-      byProject[e.event].hours += hrs; byProject[e.event].cost += cost;
+      const evtKey = e.project || e.event || '(none)';
+      if (!byProject[evtKey]) byProject[evtKey] = { hours: 0, cost: 0 };
+      byProject[evtKey].hours += hrs; byProject[evtKey].cost += cost;
       const sub = e.subproject || '(none)';
       if (!bySubproject[sub]) bySubproject[sub] = { hours: 0, cost: 0 };
       bySubproject[sub].hours += hrs; bySubproject[sub].cost += cost;
@@ -963,7 +964,7 @@
                 <span style="font-size:13px;">${e.person}</span>
               </div>
             </td>
-            <td>${e.event||''}</td>
+            <td>${e.project||e.event||''}</td>
             <td style="color:var(--text2);">${e.subproject||''}</td>
             <td style="color:var(--text2);">${e.notes||''}</td>
             <td style="text-align:right;font-weight:500;">${(+e.hours).toLocaleString('en-GB',{minimumFractionDigits:1,maximumFractionDigits:1})}</td>
