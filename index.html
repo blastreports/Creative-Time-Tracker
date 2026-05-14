@@ -1176,7 +1176,7 @@
       el.innerHTML = (includeAll ? '<option value="">All subprojects</option>' : '<option value="">Select subproject...</option>') +
         subprojects.map(s => `<option${s===cur?' selected':''}>${s}</option>`).join('');
     }
-    rebuildProjectSelect('dash-filter-event', true);
+    rebuildProjectSelect('dash-filter-event', true, 'All events');
     rebuildProjectSelect('entries-filter-event', true);
     rebuildProjectSelect('log-filter-project', true);
     rebuildProjectSelect('settings-project-select', false);
